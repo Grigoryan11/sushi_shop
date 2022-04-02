@@ -22,6 +22,12 @@ export class Product {
   price: number;
 
   @Column()
+  type: string;
+
+  @Column()
+  language: string;
+
+  @Column()
   description: string;
 
   @CreateDateColumn()
@@ -29,7 +35,4 @@ export class Product {
 
   @UpdateDateColumn()
   updatedAt?: Date;
-
-  @DeleteDateColumn()
-  deletedAt?: Date;
 }

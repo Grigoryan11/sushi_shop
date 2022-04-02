@@ -23,19 +23,6 @@ export class AuthService {
     private readonly mailerService: MailerService,
   ) {}
 
-  private async getUser(propName: string, prop?: string): Promise<userEntity> {
-    const user = await this.userRepo.findOne(
-      prop
-        ? {
-            where: [{ [propName]: prop }],
-          }
-        : {
-            where: [{ email: propName }],
-          },
-    );
-    return user ?? null;
-  }
-
   async createUser(payload: signUpDto) {
     const user = await this.userRepo.findOne({
       where: {

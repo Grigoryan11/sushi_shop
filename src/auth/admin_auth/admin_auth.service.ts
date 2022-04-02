@@ -44,13 +44,12 @@ export class AdminAuthService {
     if (isMatch) {
       if (admin.newPassword === admin.confirmPassword) {
         const hash = await bcrypt.hash(admin.newPassword, 10);
-        console.log(file.password);
         file.password = hash;
         fs.writeFile(
           path.join(currentDir, 'src/admin_auth/admin_auth.json'),
           JSON.stringify(file),
           (err) => {
-            if (err) console.log(err);
+            if (err) return err;
             else {
               console.log('File written successfully\n');
             }
@@ -73,7 +72,7 @@ export class AdminAuthService {
         to: payload.email,
         from: payload.email,
         subject: `Message from WebSite( Forgot Password ) ✔`,
-        html: `<h2>Forgot your password ❓❗</h2><br><h3>Don't worry, you can restore it by clicking on this link 😁 </h3> <h3><a href="http://localhost:3000/forgot-password.html?activation-code=${token}">Restore password</a></h3>`,
+        html: `<h2>Forgot your password ❓❗</h2><br><h3>Don't worry, you can restore it by clicking on this link 😁 </h3> <h3><a href="http://localhost:3001/recower-password?code=${token}">Restore password</a></h3>`,
       });
       return {
         message: 'success',

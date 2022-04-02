@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -29,9 +30,9 @@ export class AdminController {
     return this.adminService.getProducts();
   }
 
-  @Get('products/:type')
+  @Get('product')
   @UseGuards(JwtAuthGuard)
-  async getProductById(@Param('type') type: string) {
+  async getProductById(@Query('type') type: string) {
     return this.adminService.getProductByType(type);
   }
 

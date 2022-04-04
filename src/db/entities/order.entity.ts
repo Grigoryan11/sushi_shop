@@ -3,9 +3,11 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne, OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+  UpdateDateColumn
+} from "typeorm";
+import { userEntity } from './user.entity';
 
 @Entity()
 export class Order {
@@ -32,6 +34,9 @@ export class Order {
 
   @Column({ default: 1 })
   quantity: number;
+
+  @OneToMany(() => userEntity, (user) => user.order)
+  user: userEntity;
 
   @CreateDateColumn()
   createdAt?: Date;

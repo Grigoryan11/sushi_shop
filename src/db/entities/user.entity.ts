@@ -5,7 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-} from 'typeorm';
+  OneToMany,
+  JoinColumn, ManyToOne
+} from "typeorm";
+import { Order } from './order.entity';
 
 @Entity({
   name: 'users',
@@ -31,6 +34,10 @@ export class userEntity {
 
   @Column({ default: false })
   isActive: boolean;
+
+  @ManyToOne(() => Order, (order) => order.user)
+  @JoinColumn()
+  order: Order[];
 
   @CreateDateColumn()
   createdAt?: Date;

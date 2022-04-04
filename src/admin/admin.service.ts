@@ -42,6 +42,21 @@ export class AdminService {
     };
   }
 
+  async getProductByLang(language: string) {
+    const data = await this.productRepo.findOne({
+      where: {
+        language: language,
+      },
+    });
+    if (!data) {
+      throw new HttpException('This product cant found', 404);
+    }
+    return {
+      message: 'success',
+      data: data,
+    };
+  }
+
   async addProducts(image, payload: ProductDto, currentUser) {
     const user = currentUser.payload.email;
     if (user == file.email) {
@@ -117,6 +132,18 @@ export class AdminService {
 
   async getSlide() {
     const slide = await this.slideRepo.find();
+    if (!slide) {
+      throw new HttpException('This slide cant found', 404);
+    }
+    return {
+      data: slide,
+    };
+  }
+
+  async getSlideByLang(language: string) {
+    const slide = await this.slideRepo.findOne({
+      where: { language: language },
+    });
     if (!slide) {
       throw new HttpException('This slide cant found', 404);
     }

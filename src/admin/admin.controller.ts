@@ -36,6 +36,12 @@ export class AdminController {
     return this.adminService.getProductByType(type);
   }
 
+  @Get('product-lang')
+  @UseGuards(JwtAuthGuard)
+  async getProductByLang(@Query('language') language: string) {
+    return this.adminService.getProductByLang(language);
+  }
+
   @Post('products')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
@@ -84,6 +90,12 @@ export class AdminController {
   @UseGuards(JwtAuthGuard)
   async getSlide() {
     return this.adminService.getSlide();
+  }
+
+  @Get('slide-lang')
+  @UseGuards(JwtAuthGuard)
+  async getSlideByLang(@Query('language') language: string) {
+    return this.adminService.getSlideByLang(language);
   }
 
   @Post('slide')

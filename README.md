@@ -58,3 +58,58 @@ password: `{String}`, (required)
 confirmPassword: `{String}`, (required)
 phone: `{String}`, (required)
 `}`
+
+### ``login user``
+request url `API_HOST/auth/login`
+
+request method `POST`
+
+request body
+`{`
+email: `{String}`, (required)
+password: `{String}`, (required)
+`}`
+
+### ``changeUser password``
+request url `API_HOST/auth/changeUserPassword`
+
+request method `POST`
+
+request body
+`{`
+oldPassword: `{String}`, (required)
+newPassword: `{String}`, (required)
+confirmPassword: `{String}`, (required)
+`}`
+
+### ``user forgot password``
+request url `API_HOST/auth/email-forgot-password`
+
+request method `POST`
+
+request body
+`{`
+email: `{String}`, (required)
+`}`
+
+### ``forgot password change``
+request url `API_HOST/auth/forgot-password`
+
+request method `POST`
+
+request body
+`{`
+new_pass: `{String}`, (required)
+confirm_pass: `{String}`, (required)
+data: `{String}`, (required)
+`}`
+
+### ``user activating``
+request url `API_HOST/auth/active`
+
+request method `POST`
+
+request body
+`{`
+data: `{String}`, (required)
+`}`

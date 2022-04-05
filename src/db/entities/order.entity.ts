@@ -1,13 +1,15 @@
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
-  ManyToOne, OneToMany,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from "typeorm";
+  UpdateDateColumn,
+} from 'typeorm';
 import { userEntity } from './user.entity';
+import { Product } from './product.entity';
 
 @Entity()
 export class Order {
@@ -15,13 +17,10 @@ export class Order {
   id: number;
 
   @Column()
-  firstName: string;
+  fullName: string;
 
   @Column()
-  lastName: string;
-
-  @Column()
-  phone: string;
+  phone: number;
 
   @Column()
   email: string;
@@ -29,14 +28,15 @@ export class Order {
   @Column()
   address: string;
 
-  @Column()
-  city: string;
-
-  @Column({ default: 1 })
+  @Column({ default: 1, nullable: true })
   quantity: number;
 
   @OneToMany(() => userEntity, (user) => user.order)
   user: userEntity;
+
+  @ManyToOne(() => Product, (product) => product.order)
+  @JoinColumn()
+  product: Product[];
 
   @CreateDateColumn()
   createdAt?: Date;

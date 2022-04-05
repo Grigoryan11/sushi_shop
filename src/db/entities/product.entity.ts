@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Order } from './order.entity';
 
 @Entity()
 export class Product {
@@ -28,6 +30,9 @@ export class Product {
 
   @Column()
   description: string;
+
+  @OneToMany(() => Order, (order) => order.product)
+  order: Order;
 
   @CreateDateColumn()
   createdAt?: Date;

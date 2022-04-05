@@ -4,10 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  DeleteDateColumn,
-  OneToMany,
-  JoinColumn, ManyToOne
-} from "typeorm";
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm';
 import { Order } from './order.entity';
 
 @Entity({

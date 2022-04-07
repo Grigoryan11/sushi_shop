@@ -22,8 +22,8 @@ export class Order {
   @Column()
   phone: number;
 
-  @Column()
-  email: string;
+  // @Column()
+  // email: string;
 
   @Column()
   address: string;
@@ -31,7 +31,8 @@ export class Order {
   @Column({ default: 1, nullable: true })
   quantity: number;
 
-  @OneToMany(() => userEntity, (user) => user.order)
+  @ManyToOne(() => userEntity, (user) => user.order)
+  @JoinColumn()
   user: userEntity;
 
   @ManyToOne(() => Product, (product) => product.order)

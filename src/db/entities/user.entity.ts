@@ -5,8 +5,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
-  ManyToOne,
-} from 'typeorm';
+  ManyToOne, OneToMany
+} from "typeorm";
 import { Order } from './order.entity';
 
 @Entity({
@@ -34,8 +34,7 @@ export class userEntity {
   @Column({ default: false })
   isActive: boolean;
 
-  @ManyToOne(() => Order, (order) => order.user)
-  @JoinColumn()
+  @OneToMany(() => Order, (order) => order.user)
   order: Order[];
 
   @CreateDateColumn()

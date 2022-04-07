@@ -3,6 +3,8 @@ import { UserService } from './user.service';
 import { ContactDto } from './dto/contact.dto';
 import { orderDto } from './dto/order.dto';
 import { JwtAuthGuard } from '../auth/jwt.authGurad';
+import { CurrentUser } from '../auth/currentUser.decorator';
+import { userEntity } from '../db/entities/user.entity';
 
 @Controller('user')
 export class UserController {
@@ -15,12 +17,16 @@ export class UserController {
 
   @Get('orders')
   @UseGuards(JwtAuthGuard)
-  async getOrders() {
-    return this.userService.getOrders();
+  async getOrders(@CurrentUser() currentUser) {
+    return this.userService.getOrders(currentUser);
   }
 
   @Post('order')
-  async createOrder(@Body() payload: orderDto) {
-    return this.userService.createOrder(payload);
+  @UseGuards(JwtAuthGuard)
+  async createOrderForUser(
+    @Body() payload: orderDto,
+    @CurrentUser() currentUser: userEntity,
+  ) {
+    return this.userService.createOrderForUser(payload, currentUser);
   }
 }

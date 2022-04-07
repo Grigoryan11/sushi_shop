@@ -35,13 +35,13 @@ export class UserService {
     }
   }
 
-  async getOrders() {
-    const order = await this.orderRepo.findOne({
-      where: { email: 'sam.grigoryan.17@gmail.com' },
+  async getOrders(currentUser) {
+    const order = await this.userRepo.findOne({
+      where: { email: currentUser.email },
     });
-    const orderId = await this.userRepo.findOne({
-      where: { order: order.id },
-      relations: ['order', 'order.product'],
+    const orderId = await this.orderRepo.find({
+      where: { user: order.id },
+      relations: ['user', 'product'],
     });
     if (!order) {
       throw new HttpException('This order cant found', 404);
@@ -52,18 +52,23 @@ export class UserService {
     };
   }
 
-  async createOrder(payload: orderDto) {
+  async createOrderForUser(payload: orderDto, currentUser) {
+    const user = await this.userRepo.findOne({
+      where: {
+        email: currentUser.email,
+      },
+    });
     const product = await this.productRepo.findOne({
       where: { id: payload.product },
     });
     if (product) {
       const order = await this.orderRepo.save({
-        email: payload.email,
         fullName: payload.fullName,
         address: payload.address,
         quantity: payload.quantity,
         phone: payload.phone,
         product: payload.product,
+        user: user,
       });
       return {
         data: order,

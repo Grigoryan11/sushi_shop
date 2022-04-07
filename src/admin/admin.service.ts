@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../db/entities/product.entity';
 import { Repository } from 'typeorm';
@@ -58,6 +58,9 @@ export class AdminService {
   }
 
   async addProducts(image, payload: ProductDto, currentUser) {
+    if (!currentUser.payload) {
+      throw new HttpException('You dont have permission for this!', 400);
+    }
     const user = currentUser.payload.email;
     if (user == file.email) {
       const data = await this.productRepo.save({
@@ -72,6 +75,9 @@ export class AdminService {
   }
 
   async deleteProduct(id: number, currentUser) {
+    if (!currentUser.payload) {
+      throw new HttpException('You dont have permission for this!', 400);
+    }
     const user = currentUser.payload.email;
     if (user == file.email) {
       const product = await this.productRepo.findOne({ id });
@@ -117,6 +123,9 @@ export class AdminService {
   }
 
   async addSlide(image, payload: SlideDto, currentUser) {
+    if (!currentUser.payload) {
+      throw new HttpException('You dont have permission for this!', 400);
+    }
     const user = currentUser.payload.email;
     if (user == file.email) {
       const data = await this.slideRepo.save({
@@ -153,6 +162,9 @@ export class AdminService {
   }
 
   async deleteSlide(id: number, currentUser) {
+    if (!currentUser.payload) {
+      throw new HttpException('You dont have permission for this!', 400);
+    }
     const user = currentUser.payload.email;
     if (user == file.email) {
       const slide = await this.slideRepo.findOne({ id });

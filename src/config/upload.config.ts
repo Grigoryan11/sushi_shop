@@ -14,7 +14,7 @@ export class Helper {
   }
 
   static destinationPath(req, file, cb) {
-    cb(null, 'src/admin/uploads/');
+    cb(null, 'src/uploads/');
   }
 
   static fileFilter(req, file, cb) {

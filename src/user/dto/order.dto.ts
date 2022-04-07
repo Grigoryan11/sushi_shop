@@ -6,8 +6,8 @@ export class orderDto {
   @Validate(Empty, { message: 'fullName field is required' })
   fullName: string;
 
-  @IsEmail(Empty, { message: 'email field is required' })
-  email: string;
+  // @IsEmail(Empty, { message: 'email field is required' })
+  // email: string;
 
   @Validate(Empty, { message: 'Phone field is required' })
   phone: number;

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -19,6 +20,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Helper } from '../config/upload.config';
 import { diskStorage } from 'multer';
 import { SlideDto } from './dto/slide.dto';
+import { UpdateDto } from './dto/update.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -67,7 +69,13 @@ export class AdminController {
     return this.adminService.deleteProduct(id, currentUser);
   }
 
-  @Put('products/:id')
+  @Patch('products/:id')
+  @UseGuards(JwtAuthGuard)
+  async updateProduct(@Param('id') id: number, @Body() payload: UpdateDto) {
+    return this.adminService.updateProduct(id, payload);
+  }
+
+  @Patch('products/image/:id')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('image', {
@@ -78,12 +86,8 @@ export class AdminController {
       fileFilter: Helper.fileFilter,
     }),
   )
-  async updateProduct(
-    @Param('id') id: number,
-    @Body() payload: ProductDto,
-    @UploadedFile() image,
-  ) {
-    return this.adminService.updateProduct(id, payload, image);
+  async updateProductImage(@Param('id') id: number, @UploadedFile() image) {
+    return this.adminService.updateProductImage(id, image);
   }
 
   @Get('slide')

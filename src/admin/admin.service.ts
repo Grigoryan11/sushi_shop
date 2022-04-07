@@ -7,6 +7,7 @@ import { ProductDto } from './dto/product.dto';
 import * as fs from 'fs';
 import { SlideEntity } from '../db/entities/slide.entity';
 import { SlideDto } from './dto/slide.dto';
+import { UpdateDto } from './dto/update.dto';
 
 @Injectable()
 export class AdminService {
@@ -95,7 +96,25 @@ export class AdminService {
     }
   }
 
-  public async updateProduct(id: number, payload: ProductDto, image) {
+  public async updateProduct(id: number, payload: UpdateDto) {
+    const product = await this.productRepo.findOne(id);
+    if (!product) {
+      throw new HttpException('Product not found!!!', 404);
+    }
+    const data = await this.productRepo.update({ id }, payload);
+    if (data && data.affected > 0) {
+      return {
+        message: 'success',
+        data: await this.productRepo.findOne(id),
+      };
+    }
+    return {
+      message: 'Data not updated!',
+      data: [],
+    };
+  }
+
+  public async updateProductImage(id: number, image) {
     const product = await this.productRepo.findOne(id);
     if (!product) {
       await fs.unlink(image.path, (err) => {
@@ -103,10 +122,7 @@ export class AdminService {
       });
       throw new HttpException('Product not found!!!', 404);
     }
-    const data = await this.productRepo.update(
-      { id },
-      { ...payload, image: image.path },
-    );
+    const data = await this.productRepo.update({ id }, { image: image.path });
     if (data && data.affected > 0) {
       await fs.unlink(product.image, (err) => {
         console.log(err);

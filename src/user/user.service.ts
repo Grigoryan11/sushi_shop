@@ -35,6 +35,46 @@ export class UserService {
     }
   }
 
+  async getProducts() {
+    const product = await this.productRepo.find();
+    if (!product) {
+      throw new HttpException('This product cant found', 404);
+    }
+    return {
+      data: product,
+    };
+  }
+
+  async getProductByType(type: string) {
+    const data = await this.productRepo.find({
+      where: {
+        type: type,
+      },
+    });
+    if (!data) {
+      throw new HttpException('This product cant found', 404);
+    }
+    return {
+      message: 'success',
+      data: data,
+    };
+  }
+
+  async getProductByLang(language: string) {
+    const data = await this.productRepo.find({
+      where: {
+        language: language,
+      },
+    });
+    if (!data) {
+      throw new HttpException('This product cant found', 404);
+    }
+    return {
+      message: 'success',
+      data: data,
+    };
+  }
+
   async getOrders(currentUser) {
     const order = await this.userRepo.findOne({
       where: { email: currentUser.email },

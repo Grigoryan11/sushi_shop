@@ -29,7 +29,7 @@ export class AdminService {
   }
 
   async getProductByType(type: string) {
-    const data = await this.productRepo.findOne({
+    const data = await this.productRepo.find({
       where: {
         type: type,
       },
@@ -44,7 +44,7 @@ export class AdminService {
   }
 
   async getProductByLang(language: string) {
-    const data = await this.productRepo.findOne({
+    const data = await this.productRepo.find({
       where: {
         language: language,
       },

@@ -12,10 +12,7 @@ export class SlideEntity {
   id: number;
 
   @Column()
-  name: string;
-
-  @Column()
-  about: string;
+  text: string;
 
   @Column()
   image: string;

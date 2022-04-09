@@ -198,7 +198,25 @@ export class AdminService {
     }
   }
 
-  public async updateSlide(id: number, payload: SlideDto, image) {
+  public async updateSlide(id: number, payload: SlideDto) {
+    const slide = await this.slideRepo.findOne(id);
+    if (!slide) {
+      throw new HttpException('Slide not found!!!', 404);
+    }
+    const data = await this.slideRepo.update({ id }, payload);
+    if (data && data.affected > 0) {
+      return {
+        message: 'success',
+        data: await this.slideRepo.findOne(id),
+      };
+    }
+    return {
+      message: 'Data not updated',
+      data: [],
+    };
+  }
+
+  public async updateSlideImage(id: number, image) {
     const slide = await this.slideRepo.findOne(id);
     if (!slide) {
       await fs.unlink(image.path, (err) => {
@@ -206,10 +224,7 @@ export class AdminService {
       });
       throw new HttpException('Slide not found!!!', 404);
     }
-    const data = await this.slideRepo.update(
-      { id },
-      { ...payload, image: image.path },
-    );
+    const data = await this.slideRepo.update({ id }, { image: image.path });
     if (data && data.affected > 0) {
       await fs.unlink(slide.image, (err) => {
         console.log(err);

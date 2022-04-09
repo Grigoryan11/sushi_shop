@@ -127,7 +127,13 @@ export class AdminController {
     return this.adminService.deleteSlide(id, currentUser);
   }
 
-  @Put('slide/:id')
+  @Patch('slide/:id')
+  @UseGuards(JwtAuthGuard)
+  async updateSlide(@Param('id') id: number, @Body() payload: SlideDto) {
+    return this.adminService.updateSlide(id, payload);
+  }
+
+  @Patch('slide/image/:id')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('image', {
@@ -138,11 +144,7 @@ export class AdminController {
       fileFilter: Helper.fileFilter,
     }),
   )
-  async updateSlide(
-    @Param('id') id: number,
-    @Body() payload: SlideDto,
-    @UploadedFile() image,
-  ) {
-    return this.adminService.updateSlide(id, payload, image);
+  async updateSlideImage(@Param('id') id: number, @UploadedFile() image) {
+    return this.adminService.updateSlideImage(id, image);
   }
 }

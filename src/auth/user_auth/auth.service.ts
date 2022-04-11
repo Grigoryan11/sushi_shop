@@ -12,7 +12,6 @@ import {
   forgotPasswordDto,
   sentEmailForgotPassword,
 } from './dto/forgotPassword.dto';
-import jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -41,7 +40,7 @@ export class AuthService {
           to: payload.email,
           from: 'admin',
           subject: `Message from WebSite( Activation Account ) ✔`,
-          html: `<h2>Your email is't active</h2><br><h3>Please click here for activating your account 😁 </h3> <h3><a href="http://localhost:3000/activation-account.html/${token}">Activating account</a></h3>`,
+          html: `<h2>Your email is't active</h2><br><h3>Please click here for activating your account 😁 </h3> <h3><a href="http://localhost:3001/activation-account/${token}">Activating account</a></h3>`,
         });
         return {
           message: 'Please check your email!!!',
@@ -147,7 +146,7 @@ export class AuthService {
           to: payload.email,
           from: 'admin',
           subject: `Message from WebSite( Forgot Password ) ✔`,
-          html: `<h2>Forgot your password ❓❗</h2><br><h3>Don't worry, you can restore it by clicking on this link 😁 </h3> <h3><a href="http://localhost:3000/forgot-password.html/${token}">Restore password</a></h3>`,
+          html: `<h2>Forgot your password ❓❗</h2><br><h3>Don't worry, you can restore it by clicking on this link 😁 </h3> <h3><a href="http://localhost:3001/forgot-password/${token}">Restore password</a></h3>`,
         });
         return {
           message: 'success',

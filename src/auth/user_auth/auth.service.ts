@@ -58,7 +58,7 @@ export class AuthService {
   }
 
   async confirmEmail(data: CodeInterface) {
-    const decoded = jwt.decode(data.data) as JwtInterface;
+    const decoded = this.jwtService.decode(data.data) as JwtInterface;
     const user = await this.userRepo.findOne({
       where: {
         email: decoded.email,
@@ -123,9 +123,17 @@ export class AuthService {
             message: 'success',
           };
         }
+      } else {
+        throw new HttpException(
+          'Invalid new password or confirm password!',
+          401,
+        );
       }
+    } else {
+      throw new HttpException('Invalid old password!', 401);
     }
   }
+
   async sent_email_forgot_password(payload: sentEmailForgotPassword) {
     const token = this.jwtService.sign({ email: payload.email });
     const user = await this.userRepo.findOne({
@@ -155,7 +163,7 @@ export class AuthService {
     }
   }
   async forgot_password(payload: forgotPasswordDto) {
-    const decoded = jwt.decode(payload.data) as JwtInterface;
+    const decoded = this.jwtService.decode(payload.data) as JwtInterface;
     const user = await this.userRepo.findOne({
       where: {
         email: decoded.email,

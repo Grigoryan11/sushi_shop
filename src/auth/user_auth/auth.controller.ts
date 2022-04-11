@@ -40,14 +40,17 @@ export class AuthController {
   ) {
     return this.authService.changeUserPassword(currentUser, payload);
   }
+
   @Post('email-forgot-password')
   async email_forgot_password(@Body() payload: sentEmailForgotPassword) {
     return this.authService.sent_email_forgot_password(payload);
   }
+
   @Post('active')
   async token(@Body() data: CodeInterface) {
     return this.authService.confirmEmail(data);
   }
+
   @Post('forgot-password')
   async forgotPassword(@Body() payload: forgotPasswordDto) {
     return this.authService.forgot_password(payload);

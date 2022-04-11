@@ -5,8 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
-  ManyToOne, OneToMany
-} from "typeorm";
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Order } from './order.entity';
 
 @Entity({

@@ -38,6 +38,7 @@ export class AuthController {
     @CurrentUser() currentUser: userEntity,
     @Body() payload: ChangeUserPasswordDto,
   ) {
+    console.log(currentUser);
     return this.authService.changeUserPassword(currentUser, payload);
   }
 

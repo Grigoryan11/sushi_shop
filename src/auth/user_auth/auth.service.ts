@@ -82,7 +82,23 @@ export class AuthService {
         email: payload.email,
       },
     });
-    if (user.isActive == true) {
+    if (!user) {
+      throw new HttpException('Invalid email or password', 401);
+    }
+    if (user && user.isActive == false) {
+      const token = this.jwtService.sign(user);
+      await this.mailerService.sendMail({
+        to: payload.email,
+        from: 'admin',
+        subject: `Message from WebSite( Activation Account ) ✔`,
+        html: `<h2>Your email is't active</h2><br><h3>Please click here for activating your account 😁 </h3> <h3><a href="http://localhost:3001/activation-account/${token}">Activating account</a></h3>`,
+      });
+      return {
+        message: 'Please check your email!!!',
+        token: token,
+      };
+    }
+    if (user && user.isActive == true) {
       if (user && bcrypt.compareSync(payload.password, user.password)) {
         const token = this.jwtService.sign({
           id: user.id,

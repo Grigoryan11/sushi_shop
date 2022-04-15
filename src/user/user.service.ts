@@ -20,13 +20,14 @@ export class UserService {
     private readonly productRepo: Repository<Product>,
     private readonly mailerService: MailerService,
   ) {}
+
   async contactUs(payload: ContactDto) {
     const email = file.email;
     if (payload) {
       await this.mailerService.sendMail({
         to: email,
         from: payload.email,
-        subject: `Message from WebSite( Activation Account ) ✔`,
+        subject: `Message from WebSite ✔`,
         html: `<h2>Contact email: ${payload.email}</h2></br><h3>Contact Name: ${payload.firstName}</h3></br><h3>Contact Surename: ${payload.lastName}</h3></br><h3>Contact phone: ${payload.phone}</h3></br><h3>Text: ${payload.text}</h3>`,
       });
       return {
@@ -38,7 +39,7 @@ export class UserService {
   async getProducts() {
     const product = await this.productRepo.find();
     if (!product) {
-      throw new HttpException('This product cant found', 404);
+      throw new HttpException('This product cant found!', 404);
     }
     return {
       data: product,
@@ -105,11 +106,12 @@ export class UserService {
       const order = await this.orderRepo.save({
         fullName: payload.fullName,
         address: payload.address,
-        quantity: payload.quantity,
         phone: payload.phone,
-        product: payload.product,
+        // product: payload.product,
         user: user,
       });
+      product.order.push(order);
+      await this.orderRepo.save(product);
       return {
         data: order,
       };

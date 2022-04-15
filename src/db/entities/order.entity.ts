@@ -3,8 +3,9 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -22,21 +23,18 @@ export class Order {
   @Column()
   phone: number;
 
-  // @Column()
-  // email: string;
-
   @Column()
   address: string;
 
-  @Column({ default: 1, nullable: true })
-  quantity: number;
+  // @Column({ default: 1, nullable: true })
+  // quantity: number;
 
   @ManyToOne(() => userEntity, (user) => user.order)
   @JoinColumn()
   user: userEntity;
 
-  @ManyToOne(() => Product, (product) => product.order)
-  @JoinColumn()
+  @ManyToMany(() => Product, (product) => product.order)
+  @JoinTable()
   product: Product[];
 
   @CreateDateColumn()

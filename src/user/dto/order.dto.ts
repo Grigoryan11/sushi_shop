@@ -15,8 +15,8 @@ export class orderDto {
   @Validate(Empty, { message: 'Address field is required' })
   address: string;
 
-  @IsNotEmpty()
-  quantity: number;
+  // @IsNotEmpty()
+  // quantity: number;
 
   @Validate(Empty, { message: 'Product field is required' })
   product: Product[];

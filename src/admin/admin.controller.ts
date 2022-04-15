@@ -91,13 +91,11 @@ export class AdminController {
   }
 
   @Get('slide')
-  @UseGuards(JwtAuthGuard)
   async getSlide() {
     return this.adminService.getSlide();
   }
 
   @Get('slide-lang')
-  @UseGuards(JwtAuthGuard)
   async getSlideByLang(@Query('language') language: string) {
     return this.adminService.getSlideByLang(language);
   }

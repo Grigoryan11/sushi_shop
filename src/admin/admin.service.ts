@@ -8,7 +8,6 @@ import * as fs from 'fs';
 import { SlideEntity } from '../db/entities/slide.entity';
 import { SlideDto } from './dto/slide.dto';
 import { UpdateDto } from './dto/update.dto';
-import { FilterDto } from './dto/filter.dto';
 
 @Injectable()
 export class AdminService {
@@ -29,11 +28,11 @@ export class AdminService {
     };
   }
 
-  async getProduct(payload: FilterDto) {
+  async getProduct(type: string, language: string) {
     const data = await this.productRepo.find({
       where: {
-        type: payload.type,
-        language: payload.language,
+        type: type,
+        language: language,
       },
     });
     if (!data) {

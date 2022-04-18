@@ -47,11 +47,11 @@ export class UserService {
     };
   }
 
-  async getProduct(payload: FilterDto) {
+  async getProduct(type: string, language: string) {
     const data = await this.productRepo.find({
       where: {
-        type: payload.type,
-        language: payload.language,
+        type: type,
+        language: language,
       },
     });
     if (!data) {

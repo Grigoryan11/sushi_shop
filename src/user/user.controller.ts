@@ -22,9 +22,11 @@ export class UserController {
   }
 
   @Get('product')
-  @UseGuards(JwtAuthGuard)
-  async getProduct(@Body() payload: FilterDto) {
-    return this.userService.getProduct(payload);
+  async getProduct(
+    @Query('type') type: string,
+    @Query('language') language: string,
+  ) {
+    return this.userService.getProduct(type, language);
   }
 
   @Get('orders')

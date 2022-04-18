@@ -21,22 +21,22 @@ import { Helper } from '../config/upload.config';
 import { diskStorage } from 'multer';
 import { SlideDto } from './dto/slide.dto';
 import { UpdateDto } from './dto/update.dto';
-import { FilterDto } from './dto/filter.dto';
 
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Get('products')
-  @UseGuards(JwtAuthGuard)
   async getProducts() {
     return this.adminService.getProducts();
   }
 
   @Get('product')
-  @UseGuards(JwtAuthGuard)
-  async getProduct(@Body() payload: FilterDto) {
-    return this.adminService.getProduct(payload);
+  async getProduct(
+    @Query('type') type: string,
+    @Query('language') language: string,
+  ) {
+    return this.adminService.getProduct(type, language);
   }
 
   @Post('products')

@@ -103,15 +103,20 @@ export class UserService {
       where: { id: payload.product },
     });
     if (product) {
-      const order = await this.orderRepo.save({
+      const order1 = await this.orderRepo.save({
         fullName: payload.fullName,
         address: payload.address,
         phone: payload.phone,
-        // product: payload.product,
         user: user,
       });
-      product.order.push(order);
-      await this.orderRepo.save(product);
+      const order = await this.orderRepo.findOne({
+        where: { user: currentUser },
+        relations: ['product'],
+      });
+      console.log(order1);
+      console.log(order);
+      order.product.push(product);
+      await this.orderRepo.save(order);
       return {
         data: order,
       };

@@ -21,6 +21,7 @@ import { Helper } from '../config/upload.config';
 import { diskStorage } from 'multer';
 import { SlideDto } from './dto/slide.dto';
 import { UpdateDto } from './dto/update.dto';
+import { FilterDto } from './dto/filter.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -34,14 +35,8 @@ export class AdminController {
 
   @Get('product')
   @UseGuards(JwtAuthGuard)
-  async getProductById(@Query('type') type: string) {
-    return this.adminService.getProductByType(type);
-  }
-
-  @Get('product-lang')
-  @UseGuards(JwtAuthGuard)
-  async getProductByLang(@Query('language') language: string) {
-    return this.adminService.getProductByLang(language);
+  async getProductById(@Body() payload: FilterDto) {
+    return this.adminService.getProductByType(payload);
   }
 
   @Post('products')

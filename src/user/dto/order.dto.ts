@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, Validate } from 'class-validator';
+import { Validate } from 'class-validator';
 import { Empty } from '../../middleware/empty.customValidator';
 import { Product } from '../../db/entities/product.entity';
 

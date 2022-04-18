@@ -26,8 +26,8 @@ export class Order {
   @Column()
   address: string;
 
-  // @Column({ default: 1, nullable: true })
-  // quantity: number;
+  // @Column()
+  // totalPrice: number;
 
   @ManyToOne(() => userEntity, (user) => user.order)
   @JoinColumn()

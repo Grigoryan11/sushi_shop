@@ -8,6 +8,7 @@ import * as fs from 'fs';
 import { SlideEntity } from '../db/entities/slide.entity';
 import { SlideDto } from './dto/slide.dto';
 import { UpdateDto } from './dto/update.dto';
+import { FilterDto } from './dto/filter.dto';
 
 @Injectable()
 export class AdminService {
@@ -28,25 +29,11 @@ export class AdminService {
     };
   }
 
-  async getProductByType(type: string) {
+  async getProductByType(payload: FilterDto) {
     const data = await this.productRepo.find({
       where: {
-        type: type,
-      },
-    });
-    if (!data) {
-      throw new HttpException('This product cant found', 404);
-    }
-    return {
-      message: 'success',
-      data: data,
-    };
-  }
-
-  async getProductByLang(language: string) {
-    const data = await this.productRepo.find({
-      where: {
-        language: language,
+        type: payload.type,
+        language: payload.language,
       },
     });
     if (!data) {
@@ -72,6 +59,8 @@ export class AdminService {
         message: 'Success',
         data: data,
       };
+    } else {
+      throw new HttpException('Unauthorized!', 401);
     }
   }
 

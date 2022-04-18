@@ -35,7 +35,7 @@ export class Order {
 
   @ManyToMany(() => Product, (product) => product.order)
   @JoinTable()
-  product: Product[];
+  product: Product;
 
   @CreateDateColumn()
   createdAt?: Date;

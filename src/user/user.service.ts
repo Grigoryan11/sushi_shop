@@ -8,6 +8,7 @@ import file from '../auth/admin_auth/admin.json';
 import { orderDto } from './dto/order.dto';
 import { Order } from '../db/entities/order.entity';
 import { Product } from '../db/entities/product.entity';
+import { FilterDto } from '../admin/dto/filter.dto';
 
 @Injectable()
 export class UserService {
@@ -46,25 +47,11 @@ export class UserService {
     };
   }
 
-  async getProductByType(type: string) {
+  async getProduct(payload: FilterDto) {
     const data = await this.productRepo.find({
       where: {
-        type: type,
-      },
-    });
-    if (!data) {
-      throw new HttpException('This product cant found', 404);
-    }
-    return {
-      message: 'success',
-      data: data,
-    };
-  }
-
-  async getProductByLang(language: string) {
-    const data = await this.productRepo.find({
-      where: {
-        language: language,
+        type: payload.type,
+        language: payload.language,
       },
     });
     if (!data) {
@@ -101,6 +88,7 @@ export class UserService {
     });
     const product = await this.productRepo.findOne({
       where: { id: payload.product },
+      relations: ['order'],
     });
     if (product) {
       const order1 = await this.orderRepo.save({
@@ -108,17 +96,21 @@ export class UserService {
         address: payload.address,
         phone: payload.phone,
         user: user,
+        product: product,
       });
-      const order = await this.orderRepo.findOne({
-        where: { user: currentUser },
-        relations: ['product'],
-      });
-      console.log(order1);
-      console.log(order);
-      order.product.push(product);
-      await this.orderRepo.save(order);
+
+      console.log(order1.product);
+
+      // const order = await this.orderRepo.findOne({
+      //   where: { user: currentUser },
+      //   relations: ['product'],
+      // });
+      // console.log(order1);
+      // console.log(order);
+      // order.product.push(product);
+      // await this.orderRepo.save(order);
       return {
-        data: order,
+        data: order1,
       };
     } else {
       throw new HttpException('Product not found!!!', 404);

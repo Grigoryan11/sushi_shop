@@ -5,6 +5,7 @@ import { orderDto } from './dto/order.dto';
 import { JwtAuthGuard } from '../auth/jwt.authGurad';
 import { CurrentUser } from '../auth/currentUser.decorator';
 import { userEntity } from '../db/entities/user.entity';
+import { FilterDto } from "../admin/dto/filter.dto";
 
 @Controller('user')
 export class UserController {
@@ -21,13 +22,9 @@ export class UserController {
   }
 
   @Get('product')
-  async getProductById(@Query('type') type: string) {
-    return this.userService.getProductByType(type);
-  }
-
-  @Get('product-lang')
-  async getProductByLang(@Query('language') language: string) {
-    return this.userService.getProductByLang(language);
+  @UseGuards(JwtAuthGuard)
+  async getProduct(@Body() payload: FilterDto) {
+    return this.userService.getProduct(payload);
   }
 
   @Get('orders')

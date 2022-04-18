@@ -35,8 +35,8 @@ export class AdminController {
 
   @Get('product')
   @UseGuards(JwtAuthGuard)
-  async getProductById(@Body() payload: FilterDto) {
-    return this.adminService.getProductByType(payload);
+  async getProduct(@Body() payload: FilterDto) {
+    return this.adminService.getProduct(payload);
   }
 
   @Post('products')

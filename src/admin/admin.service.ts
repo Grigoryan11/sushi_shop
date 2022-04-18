@@ -29,7 +29,7 @@ export class AdminService {
     };
   }
 
-  async getProductByType(payload: FilterDto) {
+  async getProduct(payload: FilterDto) {
     const data = await this.productRepo.find({
       where: {
         type: payload.type,

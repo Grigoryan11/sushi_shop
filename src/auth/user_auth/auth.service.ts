@@ -86,7 +86,10 @@ export class AuthService {
       throw new HttpException('Invalid email or password', 401);
     }
     if (user && user.isActive == false) {
-      const token = this.jwtService.sign(user);
+      const data: JwtInterface = {
+        email: payload.email,
+      };
+      const token = this.jwtService.sign(data);
       await this.mailerService.sendMail({
         to: payload.email,
         from: 'admin',

@@ -9,6 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Order } from './order.entity';
+import { CartEntity } from "./cart.entity";
 
 @Entity({
   name: 'users',
@@ -32,11 +33,17 @@ export class userEntity {
   @Column()
   password: string;
 
+  @Column({ default: 0 })
+  bonus: number;
+
+  @Column({ default: 0 })
+  counter: number;
+
   @Column({ default: false })
   isActive: boolean;
 
-  @OneToMany(() => Order, (order) => order.user)
-  order: Order[];
+  @OneToMany(() => CartEntity, (cart) => cart.user)
+  cart: CartEntity;
 
   @CreateDateColumn()
   createdAt?: Date;

@@ -21,6 +21,7 @@ import { Helper } from '../config/upload.config';
 import { diskStorage } from 'multer';
 import { SlideDto } from './dto/slide.dto';
 import { UpdateDto } from './dto/update.dto';
+import { BonusDto } from './dto/bonus.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -139,5 +140,11 @@ export class AdminController {
   )
   async updateSlideImage(@Param('id') id: number, @UploadedFile() image) {
     return this.adminService.updateSlideImage(id, image);
+  }
+
+  @Post('bonus')
+  @UseGuards(JwtAuthGuard)
+  async createBonus(@Body() payload: BonusDto) {
+    return this.adminService.createBonus(payload);
   }
 }

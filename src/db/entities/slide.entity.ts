@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('slide')
 export class SlideEntity {
   @PrimaryGeneratedColumn()
   id: number;

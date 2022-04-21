@@ -3,41 +3,34 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { userEntity } from './user.entity';
 import { Product } from './product.entity';
 import { CartEntity } from './cart.entity';
 
-@Entity('order')
-export class Order {
+@Entity('cart_item')
+export class CartItemEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  fullName: string;
+  @Column({ default: 1 })
+  count: number;
 
-  @Column()
-  phone: number;
+  @OneToOne(() => Product)
+  @JoinColumn()
+  product: Product;
 
-  @Column()
-  address: string;
-
-  @Column({ nullable: true })
-  totalPrice: number;
+  @OneToMany(() => CartEntity, (cart) => cart.cartItem)
+  @JoinColumn()
+  cart: CartEntity;
 
   @CreateDateColumn()
   createdAt?: Date;
 
   @UpdateDateColumn()
   updatedAt?: Date;
-
-  @OneToOne(() => CartEntity)
-  @JoinColumn()
-  cart: CartEntity;
 }

@@ -2,11 +2,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Order } from './order.entity';
 
 @Entity()
 export class Product {
@@ -30,9 +28,6 @@ export class Product {
 
   @Column()
   description: string;
-
-  @ManyToMany(() => Order, (order) => order.product)
-  order: Order[];
 
   @CreateDateColumn()
   createdAt?: Date;

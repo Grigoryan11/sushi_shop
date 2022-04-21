@@ -5,10 +5,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ContactDto } from './dto/contact.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import file from '../auth/admin_auth/admin.json';
-import { orderDto } from './dto/order.dto';
 import { Order } from '../db/entities/order.entity';
 import { Product } from '../db/entities/product.entity';
-import { FilterDto } from '../admin/dto/filter.dto';
+import { CartDto } from './dto/cart.dto';
+import { CartEntity } from '../db/entities/cart.entity';
+import { BonusEntity } from '../db/entities/bonus.entity';
 
 @Injectable()
 export class UserService {
@@ -19,6 +20,10 @@ export class UserService {
     private readonly orderRepo: Repository<Order>,
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
+    @InjectRepository(CartEntity)
+    private readonly cartRepo: Repository<CartEntity>,
+    @InjectRepository(BonusEntity)
+    private readonly bonusRepo: Repository<BonusEntity>,
     private readonly mailerService: MailerService,
   ) {}
 
@@ -80,40 +85,76 @@ export class UserService {
     };
   }
 
-  async createOrderForUser(payload: orderDto, currentUser) {
-    const user = await this.userRepo.findOne({
-      where: {
-        email: currentUser.email,
-      },
+  async getCart() {
+    const cart = await this.cartRepo.find({
+      relations: ['product'],
     });
-    const product = await this.productRepo.findOne({
-      where: { id: payload.product },
-      relations: ['order'],
-    });
-    if (product) {
-      const order1 = await this.orderRepo.save({
-        fullName: payload.fullName,
-        address: payload.address,
-        phone: payload.phone,
-        user: user,
-        product: product,
-      });
-
-      console.log(order1.product);
-
-      // const order = await this.orderRepo.findOne({
-      //   where: { user: currentUser },
-      //   relations: ['product'],
-      // });
-      // console.log(order1);
-      // console.log(order);
-      // order.product.push(product);
-      // await this.orderRepo.save(order);
-      return {
-        data: order1,
-      };
-    } else {
-      throw new HttpException('Product not found!!!', 404);
+    if (!cart) {
+      throw new HttpException('This order cant found!!!', 404);
     }
+    return {
+      message: 'success',
+      data: cart,
+    };
   }
+
+  // async createCart(payload: CartDto) {
+  //   const product = await this.productRepo.findOne({
+  //     where: { id: payload.product },
+  //   });
+  //   if (product) {
+  //     const cart = await this.cartRepo.save({
+  //       count: payload.count,
+  //       product: product,
+  //     });
+  //     return {
+  //       message: 'success',
+  //       data: cart,
+  //     };
+  //   } else {
+  //     throw new HttpException('Product not found!!!', 404);
+  //   }
+  // }
+
+  // async createOrderForUser(payload: orderDto, currentUser) {
+  //   const user = await this.userRepo.findOne({
+  //     where: {
+  //       email: currentUser.email,
+  //     },
+  //   });
+  //   const product = await this.productRepo.findOne({
+  //     where: { id: payload.product },
+  //   });
+  //   if (product) {
+  //     const order = await this.orderRepo.save({
+  //       fullName: payload.fullName,
+  //       address: payload.address,
+  //       phone: payload.phone,
+  //       user: user,
+  //       product: [product],
+  //     });
+  //
+  //     console.log(order);
+  //
+  //     return {
+  //       data: order,
+  //     };
+  //   } else {
+  //     throw new HttpException('Product not found!!!', 404);
+  //   }
+  // }
+  // async bonus(currentUser) {
+  //   const user = await this.userRepo.findOne({
+  //     where: {
+  //       email: currentUser.email,
+  //     },
+  //   });
+  //   const bonus = await this.bonusRepo.find();
+  //   const num = bonus[0];
+  //   if (user.counter >= num.limit) {
+  //     user.bonus += num.bonus;
+  //     user.counter -= num.limit;
+  //     await this.userRepo.save(user);
+  //   }
+  // }
 }

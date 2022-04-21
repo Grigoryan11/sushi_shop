@@ -5,9 +5,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { userEntity } from '../db/entities/user.entity';
 import { Order } from '../db/entities/order.entity';
 import { Product } from '../db/entities/product.entity';
+import { CartEntity } from '../db/entities/cart.entity';
+import { BonusEntity } from '../db/entities/bonus.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([userEntity, Order, Product])],
+  imports: [
+    TypeOrmModule.forFeature([
+      userEntity,
+      Order,
+      Product,
+      CartEntity,
+      BonusEntity,
+    ]),
+  ],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

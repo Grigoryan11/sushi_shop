@@ -8,6 +8,8 @@ import * as fs from 'fs';
 import { SlideEntity } from '../db/entities/slide.entity';
 import { SlideDto } from './dto/slide.dto';
 import { UpdateDto } from './dto/update.dto';
+import { BonusDto } from './dto/bonus.dto';
+import { BonusEntity } from '../db/entities/bonus.entity';
 
 @Injectable()
 export class AdminService {
@@ -16,6 +18,8 @@ export class AdminService {
     private readonly productRepo: Repository<Product>,
     @InjectRepository(SlideEntity)
     private readonly slideRepo: Repository<SlideEntity>,
+    @InjectRepository(BonusEntity)
+    private readonly bonusRepo: Repository<BonusEntity>,
   ) {}
 
   async getProducts() {
@@ -225,6 +229,16 @@ export class AdminService {
     return {
       message: 'Data not updated',
       data: [],
+    };
+  }
+
+  async createBonus(payload: BonusDto) {
+    await this.bonusRepo.save({
+      bonus: payload.bonus,
+      price: payload.price,
+    });
+    return {
+      message: 'success',
     };
   }
 }

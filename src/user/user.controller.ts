@@ -43,6 +43,12 @@ export class UserController {
     return this.userService.getOrders(currentUser);
   }
 
+  @Get('cart')
+  @UseGuards(JwtAuthGuard)
+  async getCart(@CurrentUser() currentUser) {
+    return this.userService.getCart(currentUser);
+  }
+
   @Post('cart')
   @UseGuards(JwtAuthGuard)
   async createCartAuthUser(

@@ -89,6 +89,25 @@ export class UserService {
     };
   }
 
+  async getCart(currentUser) {
+    const user = await this.userRepo.findOne({
+      where: { email: currentUser.email },
+    });
+    const cart = await this.cartItemRepo.find({
+      where: {
+        cart: user,
+      },
+      relations: ['product'],
+    });
+    if (!cart) {
+      throw new HttpException('Cart cant found', 404);
+    }
+    return {
+      message: 'Success',
+      data: cart,
+    };
+  }
+
   async createCartAuthUser(payload: Cart_itemDto, currentUser) {
     const product = await this.productRepo.findOne({
       where: {

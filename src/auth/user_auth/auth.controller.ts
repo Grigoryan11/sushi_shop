@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Patch,
-  Post,
-  UseGuards,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { signInDto, signUpDto } from './dto/auth.dto';
 import { ChangeUserPasswordDto } from './dto/changeUserPassword.dto';
@@ -16,7 +7,8 @@ import { userEntity } from '../../db/entities/user.entity';
 import { JwtAuthGuard } from '../jwt.authGurad';
 import { sentEmailForgotPassword } from './dto/forgotPassword.dto';
 import { forgotPasswordDto } from './dto/forgotPassword.dto';
-import { CodeInterface, JwtInterface } from './interface/jwt.interface';
+import { CodeInterface } from './interface/jwt.interface';
+import { ChangeDataDto } from './dto/changeData.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -38,7 +30,6 @@ export class AuthController {
     @CurrentUser() currentUser: userEntity,
     @Body() payload: ChangeUserPasswordDto,
   ) {
-    console.log(currentUser);
     return this.authService.changeUserPassword(currentUser, payload);
   }
 
@@ -56,4 +47,13 @@ export class AuthController {
   async forgotPassword(@Body() payload: forgotPasswordDto) {
     return this.authService.forgot_password(payload);
   }
+
+  // @Patch('change-data')
+  // @UseGuards(JwtAuthGuard)
+  // async changeDataUser(
+  //   @CurrentUser() currentUser: userEntity,
+  //   @Body() payload: ChangeDataDto,
+  // ) {
+  //   return this.authService.changeDataUser(currentUser, payload);
+  // }
 }

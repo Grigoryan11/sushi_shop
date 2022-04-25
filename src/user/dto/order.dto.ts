@@ -11,6 +11,5 @@ export class orderDto {
   @Validate(Empty, { message: 'Address field is required' })
   address: string;
 
-  @Validate(Empty, { message: 'Cart field is required' })
-  cart: number;
+  bonus: number;
 }

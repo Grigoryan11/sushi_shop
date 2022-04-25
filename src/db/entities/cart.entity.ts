@@ -3,6 +3,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { userEntity } from './user.entity';
@@ -21,9 +22,5 @@ export class CartEntity {
 
   @ManyToOne(() => userEntity, (user) => user.cart)
   @JoinColumn()
-  user: userEntity[];
-
-  @ManyToOne(() => CartItemEntity, (cart) => cart.cart)
-  @JoinColumn()
-  cartItem: CartItemEntity[];
+  user: userEntity;
 }

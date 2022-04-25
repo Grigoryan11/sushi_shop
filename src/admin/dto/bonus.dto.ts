@@ -6,5 +6,5 @@ export class BonusDto {
   bonus: number;
 
   @Validate(Empty, { message: 'Price field is required' })
-  price: number;
+  limit: number;
 }

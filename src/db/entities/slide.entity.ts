@@ -15,6 +15,9 @@ export class SlideEntity {
   text: string;
 
   @Column()
+  title: string;
+
+  @Column()
   image: string;
 
   @Column()

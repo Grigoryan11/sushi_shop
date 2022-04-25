@@ -12,6 +12,7 @@ import {
   forgotPasswordDto,
   sentEmailForgotPassword,
 } from './dto/forgotPassword.dto';
+import { ChangeDataDto } from "./dto/changeData.dto";
 
 @Injectable()
 export class AuthService {
@@ -200,4 +201,26 @@ export class AuthService {
         401,
       );
   }
+
+  // async changeDataUser(currentUser, payload: ChangeDataDto) {
+  //   const user = await this.userRepo.findOne({
+  //     where: {
+  //       email: currentUser.email,
+  //     },
+  //   });
+  //   if (!user) {
+  //     throw new HttpException('User not found!!!', 404);
+  //   }
+  //   const data = await this.userRepo.update({ id }, payload);
+  //   if (data && data.affected > 0) {
+  //     return {
+  //       message: 'success',
+  //       data: data,
+  //     };
+  //   }
+  //   return {
+  //     message: 'Data not updated',
+  //     data: [],
+  //   };
+  // }
 }

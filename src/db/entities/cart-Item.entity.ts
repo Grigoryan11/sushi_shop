@@ -18,14 +18,13 @@ export class CartItemEntity {
   id: number;
 
   @Column({ default: 1 })
-  count: number;
+  quantity: number;
 
-  @OneToOne(() => Product)
+  @ManyToOne(() => Product, (product) => product.cartItem)
   @JoinColumn()
   product: Product;
 
-  @OneToMany(() => CartEntity, (cart) => cart.cartItem)
-  @JoinColumn()
+  @ManyToOne(() => CartEntity)
   cart: CartEntity;
 
   @CreateDateColumn()

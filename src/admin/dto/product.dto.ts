@@ -16,4 +16,10 @@ export class ProductDto {
 
   @Validate(Empty, { message: 'Language field is required' })
   language: string;
+
+  sale: number;
+
+  saleDataStart: Date;
+
+  saleDataEnd: Date;
 }

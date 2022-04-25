@@ -7,9 +7,11 @@ import { MailerService } from '@nestjs-modules/mailer';
 import file from '../auth/admin_auth/admin.json';
 import { Order } from '../db/entities/order.entity';
 import { Product } from '../db/entities/product.entity';
-import { CartDto } from './dto/cart.dto';
 import { CartEntity } from '../db/entities/cart.entity';
 import { BonusEntity } from '../db/entities/bonus.entity';
+import { Cart_itemDto } from './dto/cart_item.dto';
+import { CartItemEntity } from '../db/entities/cart-Item.entity';
+import { orderDto } from './dto/order.dto';
 
 @Injectable()
 export class UserService {
@@ -22,6 +24,8 @@ export class UserService {
     private readonly productRepo: Repository<Product>,
     @InjectRepository(CartEntity)
     private readonly cartRepo: Repository<CartEntity>,
+    @InjectRepository(CartItemEntity)
+    private readonly cartItemRepo: Repository<CartItemEntity>,
     @InjectRepository(BonusEntity)
     private readonly bonusRepo: Repository<BonusEntity>,
     private readonly mailerService: MailerService,
@@ -69,92 +73,123 @@ export class UserService {
   }
 
   async getOrders(currentUser) {
-    const order = await this.userRepo.findOne({
+    const user = await this.userRepo.findOne({
       where: { email: currentUser.email },
     });
-    const orderId = await this.orderRepo.find({
-      where: { user: order.id },
-      relations: ['user', 'product'],
+    const order = await this.cartItemRepo.find({
+      where: { cart: user.id },
+      relations: ['product', 'cart', 'cart.user'],
     });
     if (!order) {
       throw new HttpException('This order cant found', 404);
     }
     return {
       message: 'success',
-      data: orderId,
+      data: order,
     };
   }
 
-  async getCart() {
-    const cart = await this.cartRepo.find({
-      relations: ['product'],
+  async createCartAuthUser(payload: Cart_itemDto, currentUser) {
+    const product = await this.productRepo.findOne({
+      where: {
+        id: payload.product,
+      },
     });
-    if (!cart) {
-      throw new HttpException('This order cant found!!!', 404);
+    const user = await this.userRepo.findOne({
+      where: {
+        email: currentUser.email,
+      },
+    });
+    if (product) {
+      const total = payload.quantity * product.price;
+      let activeCart = await this.cartRepo.findOne({
+        where: { user: user, active: true },
+      });
+      if (!activeCart) {
+        activeCart = await this.cartRepo.save({
+          user: user,
+          amount: total,
+        });
+      } else {
+        await this.cartRepo.update(
+          { id: activeCart.id },
+          {
+            amount: activeCart.amount + total,
+          },
+        );
+      }
+      const cartItem = await this.cartItemRepo.save({
+        product: product,
+        quantity: payload.quantity,
+        cart: activeCart,
+      });
+      return {
+        message: 'Success',
+      };
+    } else {
+      throw new HttpException('Product not found!!!', 404);
     }
-    return {
-      message: 'success',
-      data: cart,
-    };
   }
 
-  // async createCart(payload: CartDto) {
-  //   const product = await this.productRepo.findOne({
-  //     where: { id: payload.product },
-  //   });
-  //   if (product) {
-  //     const cart = await this.cartRepo.save({
-  //       count: payload.count,
-  //       product: product,
-  //     });
-  //     return {
-  //       message: 'success',
-  //       data: cart,
-  //     };
-  //   } else {
-  //     throw new HttpException('Product not found!!!', 404);
-  //   }
-  // }
+  async deleteCartItem(id: number, currentUser) {
+    const user = await this.userRepo.findOne({
+      where: { email: currentUser.email },
+    });
+    const cartItem = await this.cartItemRepo.findOne(
+      { id },
+      { relations: ['product'] },
+    );
+    const cart = await this.cartRepo.findOne({
+      where: { user: user, active: true },
+    });
+    if (user && cartItem) {
+      await this.cartItemRepo.delete({ id });
+      cart.amount -= cartItem.product.price;
+      await this.cartRepo.save(cart);
+      return {
+        message: 'Success',
+      };
+    } else {
+      throw new HttpException('CartItem not found!!!', 404);
+    }
+  }
 
-  // async createOrderForUser(payload: orderDto, currentUser) {
-  //   const user = await this.userRepo.findOne({
-  //     where: {
-  //       email: currentUser.email,
-  //     },
-  //   });
-  //   const product = await this.productRepo.findOne({
-  //     where: { id: payload.product },
-  //   });
-  //   if (product) {
-  //     const order = await this.orderRepo.save({
-  //       fullName: payload.fullName,
-  //       address: payload.address,
-  //       phone: payload.phone,
-  //       user: user,
-  //       product: [product],
-  //     });
-  //
-  //     console.log(order);
-  //
-  //     return {
-  //       data: order,
-  //     };
-  //   } else {
-  //     throw new HttpException('Product not found!!!', 404);
-  //   }
-  // }
-  // async bonus(currentUser) {
-  //   const user = await this.userRepo.findOne({
-  //     where: {
-  //       email: currentUser.email,
-  //     },
-  //   });
-  //   const bonus = await this.bonusRepo.find();
-  //   const num = bonus[0];
-  //   if (user.counter >= num.limit) {
-  //     user.bonus += num.bonus;
-  //     user.counter -= num.limit;
-  //     await this.userRepo.save(user);
-  //   }
-  // }
+  async createOrderForUser(payload: orderDto, currentUser) {
+    const user = await this.userRepo.findOne({
+      where: { email: currentUser.email },
+    });
+    const cart = await this.cartRepo.findOne({
+      where: { user: user, active: true },
+    });
+    if (cart) {
+      if (payload.bonus <= user.bonus || payload.bonus == null) {
+        const order = await this.orderRepo.save({
+          fullName: payload.fullName,
+          address: payload.address,
+          phone: payload.phone,
+          totalPrice: cart.amount,
+          bonus: payload.bonus,
+          cart: cart,
+        });
+        if (order) {
+          cart.active = false;
+          await this.cartRepo.save(cart);
+          user.counter += cart.amount;
+          await this.userRepo.save(user);
+        }
+        const bonus = await this.bonusRepo.find();
+        const num = bonus[0];
+        if (user.counter >= num.limit) {
+          user.bonus += num.bonus;
+          user.counter -= num.limit;
+          await this.userRepo.save(user);
+        }
+        user.bonus -= payload.bonus;
+        await this.userRepo.save(user);
+        return order;
+      }
+    } else {
+      throw new HttpException('Cart not found!!!', 404);
+    }
+  }
 }

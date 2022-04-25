@@ -43,7 +43,7 @@ export class userEntity {
   isActive: boolean;
 
   @OneToMany(() => CartEntity, (cart) => cart.user)
-  cart: CartEntity;
+  cart: CartEntity[];
 
   @CreateDateColumn()
   createdAt?: Date;

@@ -235,7 +235,7 @@ export class AdminService {
   async createBonus(payload: BonusDto) {
     await this.bonusRepo.save({
       bonus: payload.bonus,
-      price: payload.price,
+      limit: payload.limit,
     });
     return {
       message: 'success',

@@ -3,15 +3,10 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { userEntity } from './user.entity';
-import { Product } from './product.entity';
 import { CartEntity } from './cart.entity';
 
 @Entity('order')
@@ -27,6 +22,9 @@ export class Order {
 
   @Column()
   address: string;
+
+  @Column({ default: 0 })
+  bonus: number;
 
   @Column({ nullable: true })
   totalPrice: number;

@@ -12,6 +12,7 @@ import { BonusEntity } from '../db/entities/bonus.entity';
 import { Cart_itemDto } from './dto/cart_item.dto';
 import { CartItemEntity } from '../db/entities/cart-Item.entity';
 import { orderDto } from './dto/order.dto';
+import { Cart_item_updateDto } from './dto/cart_item_update.dto';
 
 @Injectable()
 export class UserService {
@@ -150,7 +151,11 @@ export class UserService {
     }
   }
 
-  async deleteCartItem(id: number, currentUser) {
+  async updateCartItemUser(
+    id: number,
+    currentUser,
+    payload: Cart_item_updateDto,
+  ) {
     const user = await this.userRepo.findOne({
       where: { email: currentUser.email },
     });
@@ -161,15 +166,42 @@ export class UserService {
     const cart = await this.cartRepo.findOne({
       where: { user: user, active: true },
     });
-    if (user && cartItem) {
-      await this.cartItemRepo.delete({ id });
-      cart.amount -= cartItem.product.price;
-      await this.cartRepo.save(cart);
-      return {
-        message: 'Success',
-      };
-    } else {
-      throw new HttpException('CartItem not found!!!', 404);
+    if (user) {
+      if (cart && cartItem) {
+        await this.cartItemRepo.update({ id }, { quantity: payload.quantity });
+        cart.amount -= cartItem.product.price;
+        await this.cartRepo.save(cart);
+        return {
+          message: 'Success',
+        };
+      } else {
+        throw new HttpException('CartItem not found!!!', 404);
+      }
+    }
+  }
+
+  async deleteCartItemUser(id: number, currentUser) {
+    const user = await this.userRepo.findOne({
+      where: { email: currentUser.email },
+    });
+    const cartItem = await this.cartItemRepo.findOne(
+      { id },
+      { relations: ['product'] },
+    );
+    const cart = await this.cartRepo.findOne({
+      where: { user: user, active: true },
+    });
+    if (user) {
+      if (cart && cartItem) {
+        await this.cartItemRepo.delete({ id });
+        cart.amount -= cartItem.product.price;
+        await this.cartRepo.save(cart);
+        return {
+          message: 'Success',
+        };
+      } else {
+        throw new HttpException('CartItem not found!!!', 404);
+      }
     }
   }
 
@@ -211,4 +243,80 @@ export class UserService {
       throw new HttpException('Cart not found!!!', 404);
     }
   }
+
+  // async createCartUser(payload: Cart_itemDto) {
+  //   const product = await this.productRepo.findOne({
+  //     where: {
+  //       id: payload.product,
+  //     },
+  //   });
+  //   if (product) {
+  //     const total = payload.quantity * product.price;
+  //     let activeCart = await this.cartRepo.findOne({
+  //       where: { active: true },
+  //     });
+  //     if (!activeCart) {
+  //       activeCart = await this.cartRepo.save({
+  //         amount: total,
+  //       });
+  //     } else {
+  //       await this.cartRepo.update(
+  //         { id: activeCart.id },
+  //         {
+  //           amount: activeCart.amount + total,
+  //         },
+  //       );
+  //     }
+  //     const cartItem = await this.cartItemRepo.save({
+  //       product: product,
+  //       quantity: payload.quantity,
+  //       cart: activeCart,
+  //     });
+  //     return {
+  //       message: 'Success',
+  //     };
+  //   }
+  // }
+  //
+  // async createOrder(payload: orderDto) {
+  //   const cart = await this.cartRepo.findOne({
+  //     where: { active: true },
+  //   });
+  //   if (cart) {
+  //     const order = await this.orderRepo.save({
+  //       fullName: payload.fullName,
+  //       address: payload.address,
+  //       phone: payload.phone,
+  //       totalPrice: cart.amount,
+  //       cart: cart,
+  //     });
+  //     if (order) {
+  //       cart.active = false;
+  //       await this.cartRepo.save(cart);
+  //     }
+  //     return order;
+  //   } else {
+  //     throw new HttpException('Cart not found!!!', 404);
+  //   }
+  // }
+  //
+  // async deleteCartItem(id: number) {
+  //   const cartItem = await this.cartItemRepo.findOne(
+  //     { id },
+  //     { relations: ['product'] },
+  //   );
+  //   const cart = await this.cartRepo.findOne({
+  //     where: { active: true },
+  //   });
+  //   if (cartItem) {
+  //     await this.cartItemRepo.delete({ id });
+  //     cart.amount -= cartItem.product.price;
+  //     await this.cartRepo.save(cart);
+  //     return {
+  //       message: 'Success',
+  //     };
+  //   } else {
+  //     throw new HttpException('CartItem not found!!!', 404);
+  //   }
+  // }
 }

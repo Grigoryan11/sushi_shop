@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -14,6 +15,7 @@ import { JwtAuthGuard } from '../auth/jwt.authGurad';
 import { CurrentUser } from '../auth/currentUser.decorator';
 import { Cart_itemDto } from './dto/cart_item.dto';
 import { orderDto } from './dto/order.dto';
+import { Cart_item_updateDto } from "./dto/cart_item_update.dto";
 
 @Controller('user')
 export class UserController {
@@ -49,7 +51,7 @@ export class UserController {
     return this.userService.getCart(currentUser);
   }
 
-  @Post('cart')
+  @Post('cart-user')
   @UseGuards(JwtAuthGuard)
   async createCartAuthUser(
     @Body() payload: Cart_itemDto,
@@ -58,13 +60,26 @@ export class UserController {
     return this.userService.createCartAuthUser(payload, currentUser);
   }
 
-  @Delete('cart/:id')
+  @Delete('cart-user/:id')
   @UseGuards(JwtAuthGuard)
-  async deleteCartItem(@Param('id') id: number, @CurrentUser() currentUser) {
-    return this.userService.deleteCartItem(id, currentUser);
+  async deleteCartItemUser(
+    @Param('id') id: number,
+    @CurrentUser() currentUser,
+  ) {
+    return this.userService.deleteCartItemUser(id, currentUser);
   }
 
-  @Post('order')
+  @Patch('cart-user/:id')
+  @UseGuards(JwtAuthGuard)
+  async updateCartItemUser(
+    @Param('id') id: number,
+    @CurrentUser() currentUser,
+    @Body() payload: Cart_item_updateDto,
+  ) {
+    return this.userService.updateCartItemUser(id, currentUser, payload);
+  }
+
+  @Post('order-user')
   @UseGuards(JwtAuthGuard)
   async createOrderForUser(
     @Body() payload: orderDto,
@@ -72,4 +87,19 @@ export class UserController {
   ) {
     return this.userService.createOrderForUser(payload, currentUser);
   }
+
+  //@Post('cart')
+  // async createCartUser(@Body() payload: Cart_itemDto) {
+  //   return this.userService.createCartUser(payload);
+  // }
+
+  // @Post('order')
+  // async createOrder(@Body() payload: orderDto) {
+  //   return this.userService.createOrder(payload);
+  // }
+  //
+  // @Delete('cart/:id')
+  // async deleteCartItem(@Param('id') id: number) {
+  //   return this.userService.deleteCartItem(id);
+  // }
 }

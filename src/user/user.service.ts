@@ -47,6 +47,18 @@ export class UserService {
     }
   }
 
+  async getUserData(currentUser) {
+    const user = await this.userRepo.findOne({
+      where: { email: currentUser.email },
+    });
+    if (!user) {
+      throw new HttpException('This user cant found!', 404);
+    }
+    return {
+      data: user,
+    };
+  }
+
   async getProducts() {
     const product = await this.productRepo.find();
     if (!product) {
@@ -77,6 +89,17 @@ export class UserService {
     const user = await this.userRepo.findOne({
       where: { email: currentUser.email },
     });
+    const cart = await this.cartRepo.find({
+      where: {
+        user: user,
+      },
+    });
+    const item = await this.cartItemRepo.find({
+      where: {
+        cart: cart,
+      },
+    });
+    return item;
     // if (!order) {
     //   throw new HttpException('This order cant found', 404);
     // }

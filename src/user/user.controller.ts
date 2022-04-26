@@ -26,6 +26,12 @@ export class UserController {
     return this.userService.contactUs(payload);
   }
 
+  @Get('data')
+  @UseGuards(JwtAuthGuard)
+  async getUserData(@CurrentUser() currentUser) {
+    return this.userService.getUserData(currentUser);
+  }
+
   @Get('products')
   async getProducts() {
     return this.userService.getProducts();

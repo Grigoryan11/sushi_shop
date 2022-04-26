@@ -77,36 +77,26 @@ export class UserService {
     const user = await this.userRepo.findOne({
       where: { email: currentUser.email },
     });
-    const order = await this.cartItemRepo.find({
-      where: { cart: user.id },
-      relations: ['product', 'cart', 'cart.user'],
-    });
-    if (!order) {
-      throw new HttpException('This order cant found', 404);
-    }
-    return {
-      message: 'success',
-      data: order,
-    };
+    // if (!order) {
+    //   throw new HttpException('This order cant found', 404);
+    // }
+    // return {
+    //   message: 'success',
+    //   data: order,
+    // };
   }
 
   async getCart(currentUser) {
     const user = await this.userRepo.findOne({
       where: { email: currentUser.email },
     });
-    const cart = await this.cartItemRepo.find({
-      where: {
-        cart: user,
-      },
-      relations: ['product'],
-    });
-    if (!cart) {
-      throw new HttpException('Cart cant found', 404);
-    }
-    return {
-      message: 'Success',
-      data: cart,
-    };
+    // if (!cart) {
+    //   throw new HttpException('Cart cant found', 404);
+    // }
+    // return {
+    //   message: 'Success',
+    //   data: cart,
+    // };
   }
 
   async createCartAuthUser(payload: Cart_itemDto, currentUser) {
@@ -308,7 +298,7 @@ export class UserService {
   //   const cart = await this.cartRepo.findOne({
   //     where: { active: true },
   //   });
-  //   if (cartItem) {
+  //   if (cart && cartItem) {
   //     await this.cartItemRepo.delete({ id });
   //     cart.amount -= cartItem.product.price;
   //     await this.cartRepo.save(cart);

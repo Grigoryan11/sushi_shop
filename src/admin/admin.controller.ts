@@ -147,4 +147,14 @@ export class AdminController {
   async createBonus(@Body() payload: BonusDto) {
     return this.adminService.createBonus(payload);
   }
+
+  @Patch('bonus/:id')
+  @UseGuards(JwtAuthGuard)
+  async updateBonus(
+    @Body() payload: BonusDto,
+    @Param('id') id: number,
+    @CurrentUser() currentUser,
+  ) {
+    return this.adminService.updateBonus(id, payload, currentUser);
+  }
 }

@@ -241,4 +241,21 @@ export class AdminService {
       message: 'success',
     };
   }
+
+  async updateBonus(id: number, payload: BonusDto, currentUser) {
+    if (!currentUser.payload) {
+      throw new HttpException('You dont have permission for this!', 400);
+    }
+    const user = currentUser.payload.email;
+    if (user == file.email) {
+      const bonus = await this.bonusRepo.findOne(id);
+      if (!bonus) {
+        throw new HttpException('Bonus not found!!!', 404);
+      }
+      await this.bonusRepo.update({ id }, payload);
+    }
+    return {
+      message: 'Success',
+    };
+  }
 }

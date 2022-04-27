@@ -33,15 +33,6 @@ export class Product {
   @Column()
   description: string;
 
-  // @Column({ default: 0 })
-  // sale: number;
-  //
-  // @Column({ nullable: true })
-  // saleDataStart?: Date;
-  //
-  // @Column({ nullable: true })
-  // saleDataEnd?: Date;
-
   @CreateDateColumn()
   createdAt?: Date;
 

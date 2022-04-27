@@ -40,6 +40,12 @@ export class AdminController {
     return this.adminService.getProduct(type, language);
   }
 
+  @Get('orders')
+  @UseGuards(JwtAuthGuard)
+  async getOrders(@CurrentUser() currentUser) {
+    return this.adminService.getOrders(currentUser);
+  }
+
   @Post('products')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(

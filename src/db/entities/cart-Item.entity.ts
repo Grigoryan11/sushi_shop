@@ -24,7 +24,10 @@ export class CartItemEntity {
   @JoinColumn()
   product: Product;
 
-  @ManyToOne(() => CartEntity)
+  // @ManyToOne(() => CartEntity)
+  // cart: CartEntity;
+
+  @ManyToOne(() => CartEntity, (cart) => cart.cartItem)
   cart: CartEntity;
 
   @CreateDateColumn()

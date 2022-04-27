@@ -10,6 +10,9 @@ import { SlideDto } from './dto/slide.dto';
 import { UpdateDto } from './dto/update.dto';
 import { BonusDto } from './dto/bonus.dto';
 import { BonusEntity } from '../db/entities/bonus.entity';
+import { userEntity } from '../db/entities/user.entity';
+import { CartEntity } from '../db/entities/cart.entity';
+import { CartItemEntity } from '../db/entities/cart-Item.entity';
 
 @Injectable()
 export class AdminService {
@@ -20,6 +23,12 @@ export class AdminService {
     private readonly slideRepo: Repository<SlideEntity>,
     @InjectRepository(BonusEntity)
     private readonly bonusRepo: Repository<BonusEntity>,
+    @InjectRepository(userEntity)
+    private readonly userRepo: Repository<userEntity>,
+    @InjectRepository(CartEntity)
+    private readonly cartRepo: Repository<CartEntity>,
+    @InjectRepository(CartItemEntity)
+    private readonly cartItemRepo: Repository<CartItemEntity>,
   ) {}
 
   async getProducts() {
@@ -240,6 +249,31 @@ export class AdminService {
     return {
       message: 'success',
     };
+  }
+
+  async getOrders(currentUser) {
+    if (!currentUser.payload) {
+      throw new HttpException('You dont have permission for this!', 400);
+    }
+    const cart = await this.cartRepo.find({
+      where: {
+        active: false,
+      },
+    });
+
+    const order = await this.cartItemRepo.find({
+      // where: {
+      //   cart: [],
+      // },
+      relations: ['product', 'cart', 'cart.user'],
+    });
+
+    return order;
+
+    // if (!order) {
+    //   throw new HttpException('Order not found!!!', 404);
+    // }
+    // return order;
   }
 
   async getBonus(currentUser) {

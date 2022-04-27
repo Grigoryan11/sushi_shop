@@ -89,22 +89,17 @@ export class UserService {
     const user = await this.userRepo.findOne({
       where: { email: currentUser.email },
     });
-    const cart = await this.cartRepo.findOne({
+    const cart = await this.cartRepo.find({
       where: {
-        user,
+        user: user,
         active: false,
       },
+      relations: ['user', 'cartItem', 'cartItem.product'],
     });
-    const order = await this.cartItemRepo.find({
-      where: {
-        cart,
-      },
-      relations: ['product', 'cart', 'cart.user'],
-    });
-    if (!order) {
-      throw new HttpException('Order not found!!!', 404);
+    if (!cart) {
+      throw new HttpException('Cart product cant found', 404);
     }
-    return order;
+    return cart;
   }
 
   async getCart(currentUser) {
@@ -289,7 +284,7 @@ export class UserService {
   //   if (product) {
   //     const total = payload.quantity * product.price;
   //     let activeCart = await this.cartRepo.findOne({
-  //       where: { active: true },
+  //       where: { active: true, user: null },
   //     });
   //     if (!activeCart) {
   //       activeCart = await this.cartRepo.save({
@@ -303,11 +298,22 @@ export class UserService {
   //         },
   //       );
   //     }
-  //     const cartItem = await this.cartItemRepo.save({
-  //       product: product,
-  //       quantity: payload.quantity,
-  //       cart: activeCart,
+  //     const existCartItem = await this.cartItemRepo.findOne({
+  //       where: {
+  //         product,
+  //         cart: activeCart,
+  //       },
   //     });
+  //     if (existCartItem) {
+  //       existCartItem.quantity += +payload.quantity;
+  //       await this.cartItemRepo.update({ id: existCartItem.id }, existCartItem);
+  //     } else {
+  //       await this.cartItemRepo.save({
+  //         product: product,
+  //         quantity: payload.quantity,
+  //         cart: activeCart,
+  //       });
+  //     }
   //     return {
   //       message: 'Success',
   //     };

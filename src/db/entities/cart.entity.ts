@@ -23,4 +23,7 @@ export class CartEntity {
   @ManyToOne(() => userEntity, (user) => user.cart)
   @JoinColumn()
   user: userEntity;
+
+  @OneToMany(() => CartItemEntity, (item) => item.cart)
+  cartItem: CartItemEntity[];
 }

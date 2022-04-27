@@ -259,21 +259,12 @@ export class AdminService {
       where: {
         active: false,
       },
+      relations: ['order', 'user', 'cartItem', 'cartItem.product'],
     });
-
-    const order = await this.cartItemRepo.find({
-      // where: {
-      //   cart: [],
-      // },
-      relations: ['product', 'cart', 'cart.user'],
-    });
-
-    return order;
-
-    // if (!order) {
-    //   throw new HttpException('Order not found!!!', 404);
-    // }
-    // return order;
+    if (!cart) {
+      throw new HttpException('Cart product cant found', 404);
+    }
+    return cart;
   }
 
   async getBonus(currentUser) {

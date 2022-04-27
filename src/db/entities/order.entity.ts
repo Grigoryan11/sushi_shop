@@ -35,7 +35,7 @@ export class Order {
   @UpdateDateColumn()
   updatedAt?: Date;
 
-  @OneToOne(() => CartEntity)
+  @OneToOne(() => CartEntity, (cart) => cart.order)
   @JoinColumn()
   cart: CartEntity;
 }

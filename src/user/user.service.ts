@@ -13,6 +13,7 @@ import { Cart_itemDto } from './dto/cart_item.dto';
 import { CartItemEntity } from '../db/entities/cart-Item.entity';
 import { orderDto } from './dto/order.dto';
 import { Cart_item_updateDto } from './dto/cart_item_update.dto';
+import ip from 'ip';
 
 @Injectable()
 export class UserService {
@@ -339,26 +340,6 @@ export class UserService {
   //     return order;
   //   } else {
   //     throw new HttpException('Cart not found!!!', 404);
-  //   }
-  // }
-  //
-  // async deleteCartItem(id: number) {
-  //   const cartItem = await this.cartItemRepo.findOne(
-  //     { id },
-  //     { relations: ['product'] },
-  //   );
-  //   const cart = await this.cartRepo.findOne({
-  //     where: { active: true },
-  //   });
-  //   if (cart && cartItem) {
-  //     await this.cartItemRepo.delete({ id });
-  //     cart.amount -= cartItem.product.price;
-  //     await this.cartRepo.save(cart);
-  //     return {
-  //       message: 'Success',
-  //     };
-  //   } else {
-  //     throw new HttpException('CartItem not found!!!', 404);
   //   }
   // }
 }

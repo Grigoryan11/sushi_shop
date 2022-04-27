@@ -266,10 +266,11 @@ export class UserService {
           user.counter -= num.limit;
           await this.userRepo.save(user);
         }
-        user.bonus -= payload.bonus;
-        await this.userRepo.save(user);
         order.totalPrice -= order.bonus;
         await this.orderRepo.save(order);
+        user.bonus -= payload.bonus;
+        user.counter -= order.bonus;
+        await this.userRepo.save(user);
         return order;
       } else {
         throw new HttpException('Bonus exceeds the maximum allowed limit', 403);

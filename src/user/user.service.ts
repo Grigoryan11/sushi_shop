@@ -158,11 +158,22 @@ export class UserService {
           },
         );
       }
-      const cartItem = await this.cartItemRepo.save({
-        product: product,
-        quantity: payload.quantity,
-        cart: activeCart,
+      const existCartItem = await this.cartItemRepo.findOne({
+        where: {
+          product,
+          cart: activeCart,
+        },
       });
+      if (existCartItem) {
+        existCartItem.quantity += +payload.quantity;
+        await this.cartItemRepo.update({ id: existCartItem.id }, existCartItem);
+      } else {
+        await this.cartItemRepo.save({
+          product: product,
+          quantity: payload.quantity,
+          cart: activeCart,
+        });
+      }
       return {
         message: 'Success',
       };
@@ -190,7 +201,7 @@ export class UserService {
       if (cart && cartItem) {
         await this.cartItemRepo.update({ id }, { quantity: payload.quantity });
         cart.amount -= cartItem.product.price;
-        await this.cartRepo.save(cart);
+        await this.cartRepo.update({ id: cart.id }, cart);
         return {
           message: 'Success',
         };

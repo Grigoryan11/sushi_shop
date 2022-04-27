@@ -242,6 +242,20 @@ export class AdminService {
     };
   }
 
+  async getBonus(currentUser) {
+    if (!currentUser.payload) {
+      throw new HttpException('You dont have permission for this!', 400);
+    }
+    const bonus = await this.bonusRepo.find();
+    if (!bonus) {
+      throw new HttpException('Bonus doesnt exist!', 404);
+    }
+    return {
+      message: 'Success',
+      data: bonus,
+    };
+  }
+
   async updateBonus(id: number, payload: BonusDto, currentUser) {
     if (!currentUser.payload) {
       throw new HttpException('You dont have permission for this!', 400);

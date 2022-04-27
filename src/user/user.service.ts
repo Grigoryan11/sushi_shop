@@ -268,7 +268,11 @@ export class UserService {
         }
         user.bonus -= payload.bonus;
         await this.userRepo.save(user);
+        order.totalPrice -= order.bonus;
+        await this.orderRepo.save(order);
         return order;
+      } else {
+        throw new HttpException('Bonus exceeds the maximum allowed limit', 403);
       }
     } else {
       throw new HttpException('Cart not found!!!', 404);

@@ -148,6 +148,12 @@ export class AdminController {
     return this.adminService.createBonus(payload);
   }
 
+  @Get('bonus')
+  @UseGuards(JwtAuthGuard)
+  async getBonus(@CurrentUser() currentUser) {
+    return this.adminService.getBonus(currentUser);
+  }
+
   @Patch('bonus/:id')
   @UseGuards(JwtAuthGuard)
   async updateBonus(

@@ -94,26 +94,26 @@ export class UserController {
     return this.userService.createOrderForUser(payload, currentUser);
   }
 
-  @Post('cart')
-  async createCartUser(@Body() payload: Cart_itemDto) {
-    return this.userService.createCartUser(payload);
-  }
-
-  @Post('order')
-  async createOrder(@Body() payload: orderDto) {
-    return this.userService.createOrder(payload);
-  }
-
-  @Delete('cart/:id')
-  async deleteCartItem(@Param('id') id: number) {
-    return this.userService.deleteCartItem(id);
-  }
-
-  @Patch('cart/:id')
-  async updateCartItem(
-    @Param('id') id: number,
-    @Body() payload: Cart_item_updateDto,
-  ) {
-    return this.userService.updateCartItem(id, payload);
-  }
+  // @Post('cart')
+  // async createCartUser(@Body() payload: Cart_itemDto) {
+  //   return this.userService.createCartUser(payload);
+  // }
+  //
+  // @Post('order')
+  // async createOrder(@Body() payload: orderDto) {
+  //   return this.userService.createOrder(payload);
+  // }
+  //
+  // @Delete('cart/:id')
+  // async deleteCartItem(@Param('id') id: number) {
+  //   return this.userService.deleteCartItem(id);
+  // }
+  //
+  // @Patch('cart/:id')
+  // async updateCartItem(
+  //   @Param('id') id: number,
+  //   @Body() payload: Cart_item_updateDto,
+  // ) {
+  //   return this.userService.updateCartItem(id, payload);
+  // }
 }

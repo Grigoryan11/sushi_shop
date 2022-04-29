@@ -29,9 +29,6 @@ export class CartEntity {
   @OneToMany(() => CartItemEntity, (item) => item.cart)
   cartItem: CartItemEntity[];
 
-  @Column({ nullable: true })
-  ipAddress: string;
-
   @OneToOne(() => Order, (order) => order.cart)
   order: Order;
 }

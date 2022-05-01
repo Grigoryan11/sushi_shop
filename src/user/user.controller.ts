@@ -16,6 +16,9 @@ import { CurrentUser } from '../auth/currentUser.decorator';
 import { Cart_itemDto } from './dto/cart_item.dto';
 import { orderDto } from './dto/order.dto';
 import { Cart_item_updateDto } from './dto/cart_item_update.dto';
+import { CartItem_notUserDto } from './dto/cartItem_notUser.dto';
+import { OrderNotUserDto } from './dto/orderNotUser.dto';
+import { HashForDeleteDto } from './dto/hashForDelete.dto';
 
 @Controller('user')
 export class UserController {
@@ -94,26 +97,29 @@ export class UserController {
     return this.userService.createOrderForUser(payload, currentUser);
   }
 
-  // @Post('cart')
-  // async createCartUser(@Body() payload: Cart_itemDto) {
-  //   return this.userService.createCartUser(payload);
-  // }
-  //
-  // @Post('order')
-  // async createOrder(@Body() payload: orderDto) {
-  //   return this.userService.createOrder(payload);
-  // }
-  //
-  // @Delete('cart/:id')
-  // async deleteCartItem(@Param('id') id: number) {
-  //   return this.userService.deleteCartItem(id);
-  // }
-  //
-  // @Patch('cart/:id')
-  // async updateCartItem(
-  //   @Param('id') id: number,
-  //   @Body() payload: Cart_item_updateDto,
-  // ) {
-  //   return this.userService.updateCartItem(id, payload);
-  // }
+  @Post('cart')
+  async createCartUser(@Body() payload: CartItem_notUserDto) {
+    return this.userService.createCartUser(payload);
+  }
+
+  @Post('order')
+  async createOrder(@Body() payload: OrderNotUserDto) {
+    return this.userService.createOrder(payload);
+  }
+
+  @Delete('cart/:id')
+  async deleteCartItem(
+    @Param('id') id: number,
+    @Body() payload: HashForDeleteDto,
+  ) {
+    return this.userService.deleteCartItem(id, payload);
+  }
+
+  @Patch('cart/:id')
+  async updateCartItem(
+    @Param('id') id: number,
+    @Body() payload: Cart_item_updateDto,
+  ) {
+    return this.userService.updateCartItem(id, payload);
+  }
 }

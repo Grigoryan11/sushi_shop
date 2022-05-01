@@ -12,7 +12,6 @@ import {
   forgotPasswordDto,
   sentEmailForgotPassword,
 } from './dto/forgotPassword.dto';
-import { ChangeDataDto } from './dto/changeData.dto';
 
 @Injectable()
 export class AuthService {

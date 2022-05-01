@@ -22,6 +22,9 @@ export class CartEntity {
   @Column({ default: true })
   active: boolean;
 
+  @Column({ nullable: true })
+  hash: string;
+
   @ManyToOne(() => userEntity, (user) => user.cart)
   @JoinColumn()
   user: userEntity;

@@ -13,7 +13,9 @@ import { Cart_itemDto } from './dto/cart_item.dto';
 import { CartItemEntity } from '../db/entities/cart-Item.entity';
 import { orderDto } from './dto/order.dto';
 import { Cart_item_updateDto } from './dto/cart_item_update.dto';
-import ip from 'ip';
+import { CartItem_notUserDto } from './dto/cartItem_notUser.dto';
+import { OrderNotUserDto } from './dto/orderNotUser.dto';
+import { HashForDeleteDto } from './dto/hashForDelete.dto';
 
 @Injectable()
 export class UserService {
@@ -229,7 +231,7 @@ export class UserService {
     if (user) {
       if (cart && cartItem) {
         await this.cartItemRepo.delete({ id });
-        cart.amount -= cartItem.product.price;
+        cart.amount -= cartItem.product.price * cartItem.quantity;
         await this.cartRepo.save(cart);
         return {
           message: 'Success',
@@ -284,113 +286,124 @@ export class UserService {
     }
   }
 
-  // async createCartUser(payload: Cart_itemDto) {
-  //   const product = await this.productRepo.findOne({
-  //     where: {
-  //       id: payload.product,
-  //     },
-  //   });
-  //   console.log(ip.address());
-  //   if (product) {
-  //     const total = payload.quantity * product.price;
-  //     let activeCart = await this.cartRepo.findOne({
-  //       where: { active: true, ipAddress: ip.address() },
-  //     });
-  //     if (!activeCart) {
-  //       activeCart = await this.cartRepo.save({
-  //         amount: total,
-  //         ipAddress: ip.address(),
-  //       });
-  //       console.log(activeCart);
-  //     } else {
-  //       await this.cartRepo.update(
-  //         { id: activeCart.id },
-  //         {
-  //           amount: activeCart.amount + total,
-  //         },
-  //       );
-  //     }
-  //     const existCartItem = await this.cartItemRepo.findOne({
-  //       where: {
-  //         product,
-  //         cart: activeCart,
-  //       },
-  //     });
-  //     if (existCartItem) {
-  //       existCartItem.quantity += +payload.quantity;
-  //       await this.cartItemRepo.update({ id: existCartItem.id }, existCartItem);
-  //     } else {
-  //       await this.cartItemRepo.save({
-  //         product: product,
-  //         quantity: payload.quantity,
-  //         cart: activeCart,
-  //       });
-  //     }
-  //     return {
-  //       message: 'Success',
-  //     };
-  //   }
-  // }
-  //
-  // async createOrder(payload: orderDto) {
-  //   const cart = await this.cartRepo.findOne({
-  //     where: { active: true },
-  //   });
-  //   if (cart) {
-  //     const order = await this.orderRepo.save({
-  //       fullName: payload.fullName,
-  //       address: payload.address,
-  //       phone: payload.phone,
-  //       totalPrice: cart.amount,
-  //       cart: cart,
-  //     });
-  //     if (order) {
-  //       cart.active = false;
-  //       await this.cartRepo.save(cart);
-  //     }
-  //     return order;
-  //   } else {
-  //     throw new HttpException('Cart not found!!!', 404);
-  //   }
-  // }
-  //
-  // async deleteCartItem(id: number) {
-  //   const cartItem = await this.cartItemRepo.findOne(
-  //     { id },
-  //     { relations: ['product'] },
-  //   );
-  //   const cart = await this.cartRepo.findOne({
-  //     where: { ipAddress: ip.address(), active: true },
-  //   });
-  //   if (cart && cartItem) {
-  //     await this.cartItemRepo.delete({ id });
-  //     cart.amount -= cartItem.product.price;
-  //     await this.cartRepo.save(cart);
-  //     return {
-  //       message: 'Success',
-  //     };
-  //   } else {
-  //     throw new HttpException('CartItem not found!!!', 404);
-  //   }
-  // }
-  //
-  // async updateCartItem(id: number, payload: Cart_item_updateDto) {
-  //   const cartItem = await this.cartItemRepo.findOne(
-  //     { id },
-  //     { relations: ['product'] },
-  //   );
-  //   const cart = await this.cartRepo.findOne({
-  //     where: { ipAddress: ip.address(), active: true },
-  //   });
-  //   if (cart && cartItem) {
-  //     await this.cartItemRepo.update({ id }, { quantity: payload.quantity });
-  //     cart.amount -= cartItem.product.price;
-  //     await this.cartRepo.update({ id: cart.id }, cart);
-  //     return {
-  //       message: 'Success',
-  //     };
-  //   } else {
-  //     throw new HttpException('CartItem not found!!!', 404);
-  //   }
-  // }
+  async createCartUser(payload: CartItem_notUserDto) {
+    const product = await this.productRepo.findOne({
+      where: {
+        id: payload.product,
+      },
+    });
+    if (product) {
+      const total = payload.quantity * product.price;
+      let activeCart = await this.cartRepo.findOne({
+        where: { active: true, hash: payload.hash },
+      });
+      if (!activeCart) {
+        activeCart = await this.cartRepo.save({
+          amount: total,
+          hash: payload.hash,
+        });
+      } else {
+        await this.cartRepo.update(
+          { id: activeCart.id },
+          {
+            amount: activeCart.amount + total,
+          },
+        );
+      }
+      const existCartItem = await this.cartItemRepo.findOne({
+        where: {
+          product,
+          cart: activeCart,
+        },
+      });
+      if (existCartItem) {
+        existCartItem.quantity += +payload.quantity;
+        await this.cartItemRepo.update({ id: existCartItem.id }, existCartItem);
+      } else {
+        await this.cartItemRepo.save({
+          product: product,
+          quantity: payload.quantity,
+          cart: activeCart,
+        });
+      }
+      return {
+        message: 'Success',
+      };
+    }
+  }
+
+  async createOrder(payload: OrderNotUserDto) {
+    const cart = await this.cartRepo.findOne({
+      where: { active: true, hash: payload.hash },
+    });
+    if (cart) {
+      const order = await this.orderRepo.save({
+        fullName: payload.fullName,
+        address: payload.address,
+        phone: payload.phone,
+        totalPrice: cart.amount,
+        cart: cart,
+      });
+      if (order) {
+        cart.active = false;
+        await this.cartRepo.save(cart);
+      }
+      return order;
+    } else {
+      throw new HttpException('Cart not found!!!', 404);
+    }
+  }
+
+  async deleteCartItem(id: number, payload: HashForDeleteDto) {
+    const cartItem = await this.cartItemRepo.findOne(
+      { id },
+      { relations: ['product'] },
+    );
+    const cart = await this.cartRepo.findOne({
+      where: { hash: payload.hash, active: true },
+    });
+    if (cart && cartItem) {
+      await this.cartItemRepo.delete({ id });
+      cart.amount -= cartItem.product.price * cartItem.quantity;
+      await this.cartRepo.save(cart);
+      return {
+        message: 'Success',
+      };
+    } else {
+      throw new HttpException('CartItem not found!!!', 404);
+    }
+  }
+
+  async updateCartItem(id: number, payload: Cart_item_updateDto) {
+    const cartItem = await this.cartItemRepo.findOne(
+      { id },
+      { relations: ['product', 'cart'] },
+    );
+    if (payload.quantity < 1) {
+      throw new HttpException(
+        'Product quantity can not be less than one!',
+        403,
+      );
+    }
+    if (!cartItem.cart.active) {
+      throw new HttpException('Something went wrong!!!', 404);
+    }
+    const cart = await this.cartRepo.findOne({
+      where: { hash: payload.hash, active: true },
+    });
+    if (!cart) {
+      throw new HttpException('Cart not found!!!', 404);
+    }
+    if (cartItem) {
+      await this.cartItemRepo.update({ id }, { quantity: payload.quantity });
+      const diff = payload.quantity - cartItem.quantity;
+      cartItem.cart.amount += diff * cartItem.product.price;
+      await this.cartRepo.update({ id: cartItem.cart.id }, cartItem.cart);
+      return {
+        message: 'Success',
+      };
+    } else {
+      throw new HttpException('CartItem not found!!!', 404);
+    }
+  }
 }

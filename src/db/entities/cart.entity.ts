@@ -1,12 +1,12 @@
 import {
-  Column,
+  Column, CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+  PrimaryGeneratedColumn, UpdateDateColumn
+} from "typeorm";
 import { userEntity } from './user.entity';
 import { CartItemEntity } from './cart-Item.entity';
 import { Order } from './order.entity';
@@ -34,4 +34,10 @@ export class CartEntity {
 
   @OneToOne(() => Order, (order) => order.cart)
   order: Order;
+
+  @CreateDateColumn()
+  createdAt?: Date;
+
+  @UpdateDateColumn()
+  updatedAt?: Date;
 }

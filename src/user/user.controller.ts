@@ -122,4 +122,9 @@ export class UserController {
   ) {
     return this.userService.updateCartItem(id, payload);
   }
+
+  @Get('delete-true-cart')
+  async deleteAllTrueCart() {
+    return this.userService.deleteAllTrueCart();
+  }
 }

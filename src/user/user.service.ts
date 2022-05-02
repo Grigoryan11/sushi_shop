@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { LessThan, Repository } from 'typeorm';
 import { userEntity } from '../db/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContactDto } from './dto/contact.dto';
@@ -16,6 +16,7 @@ import { Cart_item_updateDto } from './dto/cart_item_update.dto';
 import { CartItem_notUserDto } from './dto/cartItem_notUser.dto';
 import { OrderNotUserDto } from './dto/orderNotUser.dto';
 import { HashForDeleteDto } from './dto/hashForDelete.dto';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class UserService {
@@ -404,6 +405,27 @@ export class UserService {
       };
     } else {
       throw new HttpException('CartItem not found!!!', 404);
+    }
+  }
+
+  @Cron('* * * * * *')
+  async deleteAllTrueCart() {
+    const date = new Date();
+    date.setDate(date.getDate() - 3);
+    const item = await this.cartItemRepo.find({
+      where: {
+        createdAt: LessThan(date),
+      },
+    });
+    const cart = await this.cartRepo.find({
+      where: {
+        active: true,
+        createdAt: LessThan(date),
+      },
+    });
+    if (item && cart) {
+      await this.cartItemRepo.remove(item);
+      await this.cartRepo.remove(cart);
     }
   }
 }

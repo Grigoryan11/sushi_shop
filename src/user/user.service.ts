@@ -408,24 +408,26 @@ export class UserService {
     }
   }
 
-  @Cron('* * * * * *')
+  @Cron('0 0 */3 * *')
   async deleteAllTrueCart() {
     const date = new Date();
     date.setDate(date.getDate() - 3);
-    const item = await this.cartItemRepo.find({
-      where: {
-        createdAt: LessThan(date),
-      },
-    });
     const cart = await this.cartRepo.find({
       where: {
         active: true,
+        user: null,
         createdAt: LessThan(date),
       },
+      relations: ['cartItem'],
     });
-    if (item && cart) {
-      await this.cartItemRepo.remove(item);
-      await this.cartRepo.remove(cart);
+    if (cart) {
+      cart.map(async (m) => {
+        await this.cartItemRepo.remove(m.cartItem);
+        await this.cartRepo.remove(cart);
+      });
+      return {
+        message: 'Success',
+      };
     }
   }
 }

@@ -54,10 +54,10 @@ export class UserController {
     return this.userService.getOrders(currentUser);
   }
 
-  @Get('cart')
+  @Get('cart-user')
   @UseGuards(JwtAuthGuard)
-  async getCart(@CurrentUser() currentUser) {
-    return this.userService.getCart(currentUser);
+  async getCartUser(@CurrentUser() currentUser) {
+    return this.userService.getCartUser(currentUser);
   }
 
   @Post('cart-user')
@@ -126,5 +126,10 @@ export class UserController {
   @Get('delete-true-cart')
   async deleteAllTrueCart() {
     return this.userService.deleteAllTrueCart();
+  }
+
+  @Get('cart')
+  async getCart(@Body() payload: HashForDeleteDto) {
+    return this.userService.getCart(payload);
   }
 }

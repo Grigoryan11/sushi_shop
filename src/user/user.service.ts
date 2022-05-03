@@ -106,7 +106,7 @@ export class UserService {
     return cart;
   }
 
-  async getCart(currentUser) {
+  async getCartUser(currentUser) {
     const user = await this.userRepo.findOne({
       where: { email: currentUser.email },
     });
@@ -429,5 +429,27 @@ export class UserService {
         message: 'Success',
       };
     }
+  }
+
+  async getCart(payload: HashForDeleteDto) {
+    const cart = await this.cartRepo.findOne({
+      where: {
+        hash: payload.hash,
+        active: true,
+      },
+    });
+    if (!cart) {
+      throw new HttpException('Cart not found!!!', 404);
+    }
+    const cart_items = await this.cartItemRepo.find({
+      where: {
+        cart,
+      },
+      relations: ['product'],
+    });
+    if (!cart_items) {
+      throw new HttpException('CartItem not found!!!', 404);
+    }
+    return cart_items;
   }
 }

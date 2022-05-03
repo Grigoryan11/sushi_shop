@@ -128,8 +128,8 @@ export class UserController {
     return this.userService.deleteAllTrueCart();
   }
 
-  @Get('cart')
-  async getCart(@Body() payload: HashForDeleteDto) {
-    return this.userService.getCart(payload);
+  @Get('cart/:hash')
+  async getCart(@Param('hash') hash: string) {
+    return this.userService.getCart(hash);
   }
 }

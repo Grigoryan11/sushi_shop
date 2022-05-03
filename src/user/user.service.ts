@@ -431,10 +431,10 @@ export class UserService {
     }
   }
 
-  async getCart(payload: HashForDeleteDto) {
+  async getCart(hash: string) {
     const cart = await this.cartRepo.findOne({
       where: {
-        hash: payload.hash,
+        hash,
         active: true,
       },
     });

@@ -8,6 +8,7 @@ import { BonusEntity } from '../db/entities/bonus.entity';
 import { CartItemEntity } from '../db/entities/cart-Item.entity';
 import { CartEntity } from '../db/entities/cart.entity';
 import { userEntity } from '../db/entities/user.entity';
+import { Order } from '../db/entities/order.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { userEntity } from '../db/entities/user.entity';
       CartItemEntity,
       CartEntity,
       userEntity,
+      Order,
     ]),
   ],
   controllers: [AdminController],

@@ -9,6 +9,12 @@ import {
 } from 'typeorm';
 import { CartEntity } from './cart.entity';
 
+export enum Status {
+  Done = 'done',
+  Waiting = 'waiting',
+  Canceled = 'canceled',
+}
+
 @Entity('order')
 export class Order {
   @PrimaryGeneratedColumn()
@@ -28,6 +34,9 @@ export class Order {
 
   @Column({ nullable: true })
   totalPrice: number;
+
+  @Column({ type: 'enum', enum: Status, default: Status.Waiting })
+  status: Status;
 
   @CreateDateColumn()
   createdAt?: Date;

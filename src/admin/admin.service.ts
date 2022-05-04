@@ -13,6 +13,8 @@ import { BonusEntity } from '../db/entities/bonus.entity';
 import { userEntity } from '../db/entities/user.entity';
 import { CartEntity } from '../db/entities/cart.entity';
 import { CartItemEntity } from '../db/entities/cart-Item.entity';
+import { Order } from '../db/entities/order.entity';
+import { StatusDto } from './dto/status.dto';
 
 @Injectable()
 export class AdminService {
@@ -21,6 +23,8 @@ export class AdminService {
     private readonly productRepo: Repository<Product>,
     @InjectRepository(SlideEntity)
     private readonly slideRepo: Repository<SlideEntity>,
+    @InjectRepository(Order)
+    private readonly orderRepo: Repository<Order>,
     @InjectRepository(BonusEntity)
     private readonly bonusRepo: Repository<BonusEntity>,
     @InjectRepository(userEntity)
@@ -296,5 +300,26 @@ export class AdminService {
     return {
       message: 'Success',
     };
+  }
+
+  async updateStatus(id: number, payload: StatusDto, currentUser) {
+    try {
+      if (!currentUser.payload) {
+        throw new HttpException('You dont have permission for this!', 400);
+      }
+      const user = currentUser.payload.email;
+      if (user == file.email) {
+        const status = await this.orderRepo.findOne(id);
+        if (!status) {
+          throw new HttpException('Order not found!!!', 404);
+        }
+        await this.orderRepo.update({ id }, payload);
+      }
+      return {
+        message: 'Success',
+      };
+    } catch (e) {
+      return { message: e.message };
+    }
   }
 }

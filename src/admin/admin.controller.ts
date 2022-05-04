@@ -22,6 +22,7 @@ import { diskStorage } from 'multer';
 import { SlideDto } from './dto/slide.dto';
 import { UpdateDto } from './dto/update.dto';
 import { BonusDto } from './dto/bonus.dto';
+import { StatusDto } from "./dto/status.dto";
 
 @Controller('admin')
 export class AdminController {
@@ -168,5 +169,15 @@ export class AdminController {
     @CurrentUser() currentUser,
   ) {
     return this.adminService.updateBonus(id, payload, currentUser);
+  }
+
+  @Patch('status/:id')
+  @UseGuards(JwtAuthGuard)
+  async updateStatus(
+    @Param('id') id: number,
+    @Body() payload: StatusDto,
+    @CurrentUser() currentUser,
+  ) {
+    return this.adminService.updateStatus(id, payload, currentUser);
   }
 }

@@ -438,9 +438,6 @@ export class UserService {
         active: true,
       },
     });
-    if (!cart) {
-      throw new HttpException('Cart not found!!!', 404);
-    }
     const cart_items = await this.cartItemRepo.find({
       where: {
         cart,

@@ -5,9 +5,9 @@ export class BonusEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ default: 0 })
   bonus: number;
 
-  @Column()
+  @Column({ default: 0 })
   limit: number;
 }

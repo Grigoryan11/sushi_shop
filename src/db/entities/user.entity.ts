@@ -4,12 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  JoinColumn,
-  ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Order } from './order.entity';
-import { CartEntity } from "./cart.entity";
+import { CartEntity } from './cart.entity';
 
 @Entity({
   name: 'users',

@@ -88,13 +88,26 @@ export class AdminService {
     if (user == file.email) {
       const product = await this.productRepo.findOne({ id });
       if (product) {
-        await this.productRepo.delete({ id });
-        fs.unlink(product.image, (err) => {
-          console.log(err);
+        const item = await this.cartItemRepo.find({
+          where: {
+            product,
+          },
         });
-        return {
-          message: 'Success',
-        };
+        const p = item.map(async (m) => {
+          await this.cartItemRepo.remove(m);
+
+        });
+        if (p) {
+          const prod = await this.productRepo.remove(product);
+          if (prod) {
+            fs.unlink(product.image, (err) => {
+              console.log(err);
+            });
+          }
+          return {
+            message: 'Success',
+          };
+        }
       } else {
         throw new HttpException('Product not found!!!', 404);
       }

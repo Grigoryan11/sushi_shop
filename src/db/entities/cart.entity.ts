@@ -1,12 +1,14 @@
 import {
-  Column, CreateDateColumn,
+  Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn, UpdateDateColumn
-} from "typeorm";
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { userEntity } from './user.entity';
 import { CartItemEntity } from './cart-Item.entity';
 import { Order } from './order.entity';

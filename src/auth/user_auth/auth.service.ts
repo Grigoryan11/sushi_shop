@@ -41,7 +41,7 @@ export class AuthService {
           to: payload.email,
           from: 'admin',
           subject: `Message from WebSite( Activation Account )`,
-          html: `<h2>Your email is't active</h2><br><h3>Please click here for activating your account</h3> <h3><a href="http://localhost:3001/activation-account/${token}">Activating account</a></h3>`,
+          html: `<h2>Your email isn't active</h2><br><h3>Please click here for activating your account</h3> <h3><a href="http://localhost:3001/activation-account/${token}">Activating account</a></h3>`,
         });
         return {
           message: 'Please check your email!!!',
@@ -59,6 +59,9 @@ export class AuthService {
 
   async confirmEmail(data: CodeInterface) {
     const decoded = this.jwtService.decode(data.data) as JwtInterface;
+    if (!decoded) {
+      throw new HttpException('User with that email not found', 404);
+    }
     const user = await this.userRepo.findOne({
       where: {
         email: decoded.email,
@@ -84,9 +87,13 @@ export class AuthService {
       },
     });
     if (!user) {
-      throw new HttpException('Invalid email or password', 401);
+      throw new HttpException('Invalid email or password', 403);
     }
-    if (user && user.isActive == false) {
+    if (
+      user &&
+      user.isActive == false &&
+      bcrypt.compareSync(payload.password, user.password)
+    ) {
       const data: JwtInterface = {
         email: payload.email,
       };
@@ -95,12 +102,14 @@ export class AuthService {
         to: payload.email,
         from: 'admin',
         subject: `Message from WebSite( Activation Account )`,
-        html: `<h2>Your email is't active</h2><br><h3>Please click here for activating your account</h3> <h3><a href="http://localhost:3001/activation-account/${token}">Activating account</a></h3>`,
+        html: `<h2>Your email isn't active</h2><br><h3>Please click here for activating your account</h3> <h3><a href="http://localhost:3001/activation-account/${token}">Activating account</a></h3>`,
       });
       return {
         message: 'Please check your email!!!',
         token: token,
       };
+    } else {
+      throw new HttpException('Invalid email or password', 403);
     }
     if (user && user.isActive == true) {
       if (user && bcrypt.compareSync(payload.password, user.password)) {
@@ -116,7 +125,7 @@ export class AuthService {
           },
         };
       } else {
-        throw new HttpException('Invalid email or password', 401);
+        throw new HttpException('Invalid email or password', 403);
       }
     } else {
       throw new HttpException('User is not active', 401);
@@ -131,6 +140,9 @@ export class AuthService {
         email: currentUser.email,
       },
     });
+    if (!user) {
+      throw new HttpException('You do not have permission!', 400);
+    }
     const isMatch = await bcrypt.compare(payload.oldPassword, user.password);
     if (isMatch) {
       if (payload.newPassword === payload.confirmPassword) {
@@ -149,7 +161,7 @@ export class AuthService {
         );
       }
     } else {
-      throw new HttpException('Invalid old password!', 401);
+      throw new HttpException('Invalid old password!', 403);
     }
   }
 

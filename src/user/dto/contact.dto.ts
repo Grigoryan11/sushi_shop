@@ -1,4 +1,4 @@
-import { IsEmail, IsString, Validate } from 'class-validator';
+import { IsEmail, IsString, Matches, Validate } from 'class-validator';
 import { Empty } from '../../middleware/empty.customValidator';
 
 export class ContactDto {
@@ -8,11 +8,13 @@ export class ContactDto {
   @Validate(Empty, { message: 'lastName field is required' })
   lastName: string;
 
-  @IsEmail(Empty, { message: 'email field is required' })
+  @IsEmail()
   email: string;
 
-  @Validate(Empty, { message: 'Phone field is required' })
-  phone: number;
+  @Matches(/^[\+]?[(]?[0-9]{3}[)]?[0-9]{3}[-\s\.]?[0-9]{3}$/im, {
+    message: 'Not correct Phone number ',
+  })
+  phone: string;
 
   @IsString()
   text: string;

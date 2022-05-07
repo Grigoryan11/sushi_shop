@@ -24,7 +24,7 @@ export class Order {
   fullName: string;
 
   @Column()
-  phone: number;
+  phone: string;
 
   @Column()
   address: string;

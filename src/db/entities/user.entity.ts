@@ -19,7 +19,7 @@ export class userEntity {
   email: string;
 
   @Column()
-  phone: number;
+  phone: string;
 
   @Column()
   firstName: string;

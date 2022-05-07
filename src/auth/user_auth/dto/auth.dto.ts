@@ -1,4 +1,4 @@
-import { IsEmail, Validate, Matches } from 'class-validator';
+import { IsEmail, Validate, Matches, IsNotEmpty } from 'class-validator';
 import { Empty } from '../../../middleware/empty.customValidator';
 import validationMessage from '../../../middleware/validationMessage';
 
@@ -6,7 +6,7 @@ export class signInDto {
   @IsEmail({}, { message: validationMessage.email })
   email: string;
 
-  @Validate(Empty, { message: 'Password field is required' })
+  @IsNotEmpty()
   password: string;
 }
 
@@ -17,21 +17,20 @@ export class signUpDto {
   @Validate(Empty, { message: 'lastName field is required' })
   lastName: string;
 
-  @IsEmail({}, { message: 'email field is required' })
+  @IsEmail()
   email: string;
 
-  @Validate(Empty, { message: 'Phone field is required' })
-  phone: number;
-
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[a-z]).*$/, {
-    message: 'password too weak',
+  @Matches(/^[\+]?[(]?[0-9]{3}[)]?[0-9]{3}[-\s\.]?[0-9]{3}$/im, {
+    message: 'Not correct Phone number ',
   })
-  @Validate(Empty, { message: 'Password field is required' })
+  phone: string;
+
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&-])[A-Za-z\d@$!%*#?&-]{8,}$/, {
+    message:
+      'Password should contain minimum eight characters, at least one letter, one number and one special character',
+  })
   password: string;
 
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[a-z]).*$/, {
-    message: 'password too weak',
-  })
-  @Validate(Empty, { message: 'Password field is required' })
+  @IsNotEmpty()
   confirmPassword: string;
 }

@@ -8,7 +8,7 @@ import { Product } from '../db/entities/product.entity';
 import { CartEntity } from '../db/entities/cart.entity';
 import { BonusEntity } from '../db/entities/bonus.entity';
 import { CartItemEntity } from '../db/entities/cart-Item.entity';
-import { ScheduleModule } from "@nestjs/schedule";
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [

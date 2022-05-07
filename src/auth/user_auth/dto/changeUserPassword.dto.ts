@@ -1,17 +1,15 @@
-import { IsString, Matches, MinLength, Validate } from 'class-validator';
-import { Empty } from '../../../middleware/empty.customValidator';
+import { IsNotEmpty, Matches } from 'class-validator';
 
 export class ChangeUserPasswordDto {
-  @Validate(Empty, { message: 'oldPassword field is required' })
+  @IsNotEmpty()
   oldPassword: string;
 
-  @Validate(Empty, { message: 'newPassword field is required' })
-  @MinLength(8)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[a-z]).*$/, {
-    message: 'password too weak',
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&-])[A-Za-z\d@$!%*#?&-]{8,}$/, {
+    message:
+      'Password should contain minimum eight characters, at least one letter, one number and one special character',
   })
   newPassword: string;
 
-  @Validate(Empty, { message: 'confirmPassword field is required' })
+  @IsNotEmpty()
   confirmPassword: string;
 }

@@ -62,21 +62,25 @@ export class AdminService {
   }
 
   async addProducts(image, payload: ProductDto, currentUser) {
-    if (!currentUser.payload) {
-      throw new HttpException('You dont have permission for this!', 400);
-    }
-    const user = currentUser.payload.email;
-    if (user == file.email) {
-      const data = await this.productRepo.save({
-        ...payload,
-        image: image.path,
-      });
-      return {
-        message: 'Success',
-        data: data,
-      };
-    } else {
-      throw new HttpException('Unauthorized!', 401);
+    try {
+      if (!currentUser.payload) {
+        throw new HttpException('You dont have permission for this!', 400);
+      }
+      const user = currentUser.payload.email;
+      if (user == file.email) {
+        const data = await this.productRepo.save({
+          ...payload,
+          image: image.path,
+        });
+        return {
+          message: 'Success',
+          data: data,
+        };
+      } else {
+        throw new HttpException('Unauthorized!', 401);
+      }
+    } catch (e) {
+      return e.message;
     }
   }
 
@@ -95,7 +99,6 @@ export class AdminService {
         });
         const p = item.map(async (m) => {
           await this.cartItemRepo.remove(m);
-
         });
         if (p) {
           const prod = await this.productRepo.remove(product);

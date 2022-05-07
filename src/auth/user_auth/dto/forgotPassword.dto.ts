@@ -1,10 +1,4 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsString,
-  Matches,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
 import validationMessage from '../../../middleware/validationMessage';
 
 export class sentEmailForgotPassword {
@@ -13,19 +7,16 @@ export class sentEmailForgotPassword {
 }
 
 export class forgotPasswordDto {
-  @IsString()
   @IsNotEmpty()
-  @MinLength(8)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[a-z]).*$/, {
-    message: 'password too weak',
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&-])[A-Za-z\d@$!%*#?&-]{8,}$/, {
+    message:
+      'Password should contain minimum eight characters, at least one letter, one number and one special character',
   })
   new_pass: string;
-  @IsString()
+
   @IsNotEmpty()
-  @MinLength(8)
   confirm_pass: string;
 
-  @IsString()
   @IsNotEmpty()
   data: string;
 }

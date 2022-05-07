@@ -71,8 +71,8 @@ export class AdminAuthService {
       await this.mailerService.sendMail({
         to: payload.email,
         from: payload.email,
-        subject: `Message from WebSite( Forgot Password ) ✔`,
-        html: `<h2>Forgot your password ❓❗</h2><br><h3>Don't worry, you can restore it by clicking on this link 😁 </h3> <h3><a href="http://localhost:3001/recower-password?code=${token}">Restore password</a></h3>`,
+        subject: `Message from WebSite( Forgot Password )`,
+        html: `<h2>Forgot your password ❓❗</h2><br><h3>Don't worry, you can restore it by clicking on this link</h3> <h3><a href="http://localhost:3001/recower-password?code=${token}">Restore password</a></h3>`,
       });
       return {
         message: 'success',

@@ -48,12 +48,12 @@ export class AuthController {
     return this.authService.forgot_password(payload);
   }
 
-  // @Patch('change-data')
-  // @UseGuards(JwtAuthGuard)
-  // async changeDataUser(
-  //   @CurrentUser() currentUser: userEntity,
-  //   @Body() payload: ChangeDataDto,
-  // ) {
-  //   return this.authService.changeDataUser(currentUser, payload);
-  // }
+  @Patch('change-data')
+  @UseGuards(JwtAuthGuard)
+  async changeDataUser(
+    @CurrentUser() currentUser: userEntity,
+    @Body() payload: ChangeDataDto,
+  ) {
+    return this.authService.changeDataUser(currentUser, payload);
+  }
 }

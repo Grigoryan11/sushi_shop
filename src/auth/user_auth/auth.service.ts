@@ -12,6 +12,7 @@ import {
   forgotPasswordDto,
   sentEmailForgotPassword,
 } from './dto/forgotPassword.dto';
+import { ChangeDataDto } from "./dto/changeData.dto";
 
 @Injectable()
 export class AuthService {
@@ -39,8 +40,8 @@ export class AuthService {
         await this.mailerService.sendMail({
           to: payload.email,
           from: 'admin',
-          subject: `Message from WebSite( Activation Account ) ✔`,
-          html: `<h2>Your email is't active</h2><br><h3>Please click here for activating your account 😁 </h3> <h3><a href="http://localhost:3001/activation-account/${token}">Activating account</a></h3>`,
+          subject: `Message from WebSite( Activation Account )`,
+          html: `<h2>Your email is't active</h2><br><h3>Please click here for activating your account</h3> <h3><a href="http://localhost:3001/activation-account/${token}">Activating account</a></h3>`,
         });
         return {
           message: 'Please check your email!!!',
@@ -93,8 +94,8 @@ export class AuthService {
       await this.mailerService.sendMail({
         to: payload.email,
         from: 'admin',
-        subject: `Message from WebSite( Activation Account ) ✔`,
-        html: `<h2>Your email is't active</h2><br><h3>Please click here for activating your account 😁 </h3> <h3><a href="http://localhost:3001/activation-account/${token}">Activating account</a></h3>`,
+        subject: `Message from WebSite( Activation Account )`,
+        html: `<h2>Your email is't active</h2><br><h3>Please click here for activating your account</h3> <h3><a href="http://localhost:3001/activation-account/${token}">Activating account</a></h3>`,
       });
       return {
         message: 'Please check your email!!!',
@@ -164,8 +165,8 @@ export class AuthService {
         await this.mailerService.sendMail({
           to: payload.email,
           from: 'admin',
-          subject: `Message from WebSite( Forgot Password ) ✔`,
-          html: `<h2>Forgot your password ❓❗</h2><br><h3>Don't worry, you can restore it by clicking on this link 😁 </h3> <h3><a href="http://localhost:3001/forgot-password/${token}">Restore password</a></h3>`,
+          subject: `Message from WebSite( Forgot Password )`,
+          html: `<h2>Forgot your password ❓❗</h2><br><h3>Don't worry, you can restore it by clicking on this link </h3> <h3><a href="http://localhost:3001/forgot-password/${token}">Restore password</a></h3>`,
         });
         return {
           message: 'success',
@@ -201,25 +202,25 @@ export class AuthService {
       );
   }
 
-  // async changeDataUser(currentUser, payload: ChangeDataDto) {
-  //   const user = await this.userRepo.findOne({
-  //     where: {
-  //       email: currentUser.email,
-  //     },
-  //   });
-  //   if (!user) {
-  //     throw new HttpException('User not found!!!', 404);
-  //   }
-  //   const data = await this.userRepo.update({ id }, payload);
-  //   if (data && data.affected > 0) {
-  //     return {
-  //       message: 'success',
-  //       data: data,
-  //     };
-  //   }
-  //   return {
-  //     message: 'Data not updated',
-  //     data: [],
-  //   };
-  // }
+  async changeDataUser(currentUser, payload: ChangeDataDto) {
+    const user = await this.userRepo.findOne({
+      where: {
+        email: currentUser.email,
+      },
+    });
+    if (!user) {
+      throw new HttpException('User not found!!!', 404);
+    }
+    const data = await this.userRepo.update(user.id, payload);
+    if (data && data.affected > 0) {
+      return {
+        message: 'success',
+        data: user,
+      };
+    }
+    return {
+      message: 'Data not updated',
+      data: [],
+    };
+  }
 }

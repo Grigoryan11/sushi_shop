@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Put,
   Query,
   UploadedFile,
   UseGuards,
@@ -22,7 +21,7 @@ import { diskStorage } from 'multer';
 import { SlideDto } from './dto/slide.dto';
 import { UpdateDto } from './dto/update.dto';
 import { BonusDto } from './dto/bonus.dto';
-import { StatusDto } from "./dto/status.dto";
+import { StatusDto } from './dto/status.dto';
 
 @Controller('admin')
 export class AdminController {

@@ -89,11 +89,10 @@ export class AuthService {
     if (!user) {
       throw new HttpException('Invalid email or password', 403);
     }
-    if (
-      user &&
-      user.isActive == false &&
-      bcrypt.compareSync(payload.password, user.password)
-    ) {
+    if (user && user.isActive == false) {
+      if (!bcrypt.compareSync(payload.password, user.password)) {
+        throw new HttpException('Invalid email or password', 403);
+      }
       const data: JwtInterface = {
         email: payload.email,
       };
@@ -108,8 +107,6 @@ export class AuthService {
         message: 'Please check your email!!!',
         token: token,
       };
-    } else {
-      throw new HttpException('Invalid email or password', 403);
     }
     if (user && user.isActive == true) {
       if (user && bcrypt.compareSync(payload.password, user.password)) {

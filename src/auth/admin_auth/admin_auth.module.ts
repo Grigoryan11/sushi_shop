@@ -19,8 +19,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
         secure: true,
         service: 'Gmail',
         auth: {
-          user: 'sam.grigoryan.17@gmail.com',
-          pass: 'grig-2000',
+          user: process.env.EMAIL,
+          pass: process.env.EMAIL_PASS,
         },
       },
     }),

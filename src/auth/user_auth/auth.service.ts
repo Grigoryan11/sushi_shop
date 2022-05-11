@@ -192,11 +192,17 @@ export class AuthService {
   }
   async forgot_password(payload: forgotPasswordDto) {
     const decoded = this.jwtService.decode(payload.data) as JwtInterface;
+    if (!decoded) {
+      throw new HttpException('User not found', 404);
+    }
     const user = await this.userRepo.findOne({
       where: {
         email: decoded.email,
       },
     });
+    if (!user) {
+      throw new HttpException('User not found', 404);
+    }
     if (payload.new_pass === payload.confirm_pass) {
       const hash = await bcrypt.hash(payload.new_pass, 10);
       user.password = hash;

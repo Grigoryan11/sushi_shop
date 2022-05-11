@@ -37,6 +37,10 @@ If you need to update `npm`, you can make it using `npm`! Cool right? After runn
 ### PostgreSQL
 Install PostgreSQL [Guide](https://www.postgresql.org/download/)
 
+## Create your .env file
+
+    $ touch .env
+
 ## Running the project
 
     $ npm start:dev
